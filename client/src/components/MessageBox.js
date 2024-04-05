@@ -18,28 +18,10 @@ export default function BottomAppBar() {
 // const scktcntxt= useContext(socketContext);
 // const {onlineUsers}=scktcntxt;
 
-  useEffect(() => {
-    getAllUsers();
-  },[users])
-  
-  useEffect(() => {
-    users.forEach(element => {
-      if(element._id===selected)
-      {
-        setuser(element);
-      }
-    });
-    if(selected){
-      getMessages(selected,localStorage.getItem("token"));
-    }
-    // console.log(messa)
-    setLoading(true);
-  }, [selected])
-  
  
   return (
     <div className="msgBx">
-      <React.Fragment>
+      {/* <React.Fragment> */}
         {/* <CssBaseline /> */}
         <Paper square sx={{ pb: '50px' }}>
           {/* <Typography variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}> */}
@@ -64,7 +46,7 @@ export default function BottomAppBar() {
             ))}
           </List>
         </Paper>
-      </React.Fragment>
+      {/* </React.Fragment> */}
     </div>
   );
 }

@@ -3,7 +3,7 @@
     width: 90vw;
     justify-items: center;
     align-content: center;
-    height: 95vh;
+    height: 80%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -14,6 +14,7 @@
 .mainheader{
     border-radius: 20px;
     background: rgb(30, 206, 153);
+    max-height: 20vh;
 }
 
 .mainChat{
@@ -43,16 +44,19 @@
 .msgBx > div {
     height: 100%;
     border-radius: 20px;
+    background-color: white;
 }
 .chatlist1 ul{
-    height: 100%;
+    height: 90%;
+    overflow: auto;
 }
 
 .chatlist2{
     display: flex;
     flex-direction: column;
     border-radius:20px;
-    overflow-y:scroll;
+    height: 80vh;
+    /* overflow-y:scroll; */
     /* height: 100%; */
     /* position: fixed; */
     background: rgba(130, 194, 140, 0.66);
@@ -93,7 +97,7 @@
 
     height: 100%;
     background: rgb(224, 231, 224);
-    width: 35%;
+    width: 30%;
 }
 
 .chatBox{

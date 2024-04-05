@@ -8,7 +8,7 @@ const {user}=usrcntxt;
 
 // console.log(user)
   return (
-    <>
+    <div className="DetailsBox mx-4">
       <h3 className='desHead'>Description</h3>
      {user &&
       <>
@@ -21,7 +21,7 @@ const {user}=usrcntxt;
       <>
       Details of the Selected User will Display here.
       </>}
-    </>
+    </div>
   )
 }
 

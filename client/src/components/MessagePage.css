@@ -3,6 +3,6 @@
     margin: 20px;
 }
 .allmessages::-webkit-scrollbar{
-    display: none;
+    display: inline-block;
     width: 100%;
 }

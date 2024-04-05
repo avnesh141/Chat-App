@@ -16,7 +16,7 @@ function ChatPage() {
 
   const navigate=useNavigate();
   const usrcntxt=useContext(userContext);
-  const {setCurId}=usrcntxt;
+  const {setCurId,selected,curuser}=usrcntxt;
 
   const logout=()=>{
     localStorage.removeItem('token');
@@ -48,75 +48,35 @@ function ChatPage() {
 
               <div className="col-md-4 d-flex justify-content-center justify-content-md-end align-items-center">
                 <div className="d-flex">
-                  <a className="text-reset me-3" href="/">
+                  <a className="text-reset me-3" href="/chatpage">
                     <span><i className="fa-solid fa-envelope"></i></span>
                     <span className="badge rounded-pill badge-notification bg-danger">1</span>
                   </a>
 
                   <div className="dropdown">
-                    <a className="text-reset me-3 dropdown-toggle hidden-arrow" href="/" id="navbarDropdownMenuLink"
+                    <a className="text-reset me-3 dropdown-toggle hidden-arrow" href="/chatpage" id="navbarDropdownMenuLink"
                       role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                       <i className="fas fa-bell"></i>
                     </a>
-                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                      <li><a className="dropdown-item" href="/">Some news</a></li>
-                      <li><a className="dropdown-item" href="/">Another news</a></li>
-                      <li>
-                        <a className="dropdown-item" href="/">Something else here</a>
-                      </li>
-                    </ul>
                   </div>
 
                   <div className="dropdown">
-                    <a className="text-reset dropdown-toggle me-3 hidden-arrow" href="/" id="navbarDropdown" role="button"
+                    <a className="text-reset dropdown-toggle me-3 hidden-arrow" href="/chatpage" id="navbarDropdown" role="button"
                       data-mdb-toggle="dropdown" aria-expanded="false">
                       <i onClick={logout} className="fas fa-sign-out-alt"></i>
                     </a>
-                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="united kingdom flag"></i>English
-                          <i className="fa fa-check text-success ms-2"></i></a>
-                      </li>
-                      <li>
-                        <hr className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="poland flag"></i>Polski</a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="china flag"></i>中文</a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="japan flag"></i>日本語</a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="germany flag"></i>Deutsch</a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="france flag"></i>Français</a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="spain flag"></i>Español</a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="russia flag"></i>Русский</a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/"><i className="portugal flag"></i>Português</a>
-                      </li>
-                    </ul>
                   </div>
 
                   <div className="dropdown">
-                    <a className="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="/"
+                    <a className="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="/chatpage"
                       id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                      <img src="https://mdbootstrap.com/img/new/avatars/5.jpg" className="rounded-circle" height="22" alt=""
+                      <img src={curuser?.picture} className="rounded-circle" height="22" alt="https://mdbootstrap.com/img/new/avatars/5.jpg"
                         loading="lazy" />
                     </a>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                      <li><a className="dropdown-item" href="/">My profile</a></li>
-                      <li><a className="dropdown-item" href="/">Settings</a></li>
-                      <li><a className="dropdown-item" href="/">Logout</a></li>
+                      <li><a className="dropdown-item" href="/chatpage">My profile</a></li>
+                      <li><a className="dropdown-item" href="/chatpage">Settings</a></li>
+                      <li><a className="dropdown-item" href="/chatpage">Logout</a></li>
                     </ul>
                   </div>
                 </div>
@@ -127,19 +87,19 @@ function ChatPage() {
       </header>
       {/* </div> */}
       {width>800 && <div className='mainChat'>
-        <div className="chatlist1" >
+        {/* <div className="chatlist1" > */}
           <MessageBox />
-        </div>
-        <MessagePage/>
-        <div className="DetailsBox mx-4" >
+        {/* </div> */}
+        <MessagePage dis={0}/>
+        {/* <div  > */}
             <Description/>
-        </div>
+        {/* </div> */}
       </div>}
       { width <=800 &&
         <div className='mainChat2'>
-        <div className="chatlist3" >
-          <MessageBox />
-        </div>
+        {/* <div className="chatlist3" > */}
+          {selected?<MessagePage dis={1}/>:<MessageBox />}
+        {/* </div> */}
       </div>
       }
     </div>

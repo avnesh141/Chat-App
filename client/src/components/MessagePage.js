@@ -3,12 +3,15 @@ import userContext from '../contexts/users/UserContext'
 import SingleMessage from './SingleMessage';
 import "./MessagePage.css"
 import UselistenHook from '../contexts/users/UselistenHook';
-function MessagePage() {
+function MessagePage(props) {
+
+   const wid=props.dis?"95%":"60vw";
+   const ht=props.dis?"70vh":"80vh";
+  //  console.log(wid);
 
     const usrcntx=useContext(userContext);
-    const {user,messages,SendMessage,selected,isLoading,curuser }=usrcntx;
+    const {user,messages,SendMessage,selected,isLoading,curuser,setSelected}=usrcntx;
     const [message,setMessage]=useState("");  
-     const ele=document.getElementsByClassName('allmessages')[0];
      
      const lastmsgRef=useRef();
 
@@ -36,8 +39,14 @@ function MessagePage() {
     }
 
   return (
-    <div className="chatlist2" >
+    <div className="chatlist2" style={{width:`${wid}`,height:`${ht}`}} >
+        <div>
+         {props.dis==1 && <i onClick={()=>{
+           setSelected(null);
+         }} className="fa-solid fa-angles-left"></i>} 
           <h4 className='Chatwith mx-4 bg-white'>Chatting with {user?user.name:"User"}</h4>
+        </div>
+          
          { selected &&
           <div className='allmessages'>
             <div>

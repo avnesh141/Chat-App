@@ -77,6 +77,29 @@ function UserState(props) {
     setLoading(false);
   }
 
+
+
+  
+  useEffect(() => {
+    getAllUsers();
+  },[users])
+  
+  useEffect(() => {
+    users.forEach(element => {
+      if(element._id===selected)
+      {
+        setuser(element);
+      }
+    });
+    if(selected){
+      getMessages(selected,localStorage.getItem("token"));
+    }
+    // console.log(messa)
+    setLoading(true);
+  }, [selected])
+  
+
+
   const SendMessage = async (id, message, token) => {
 
     // console.log(id,message,token);
