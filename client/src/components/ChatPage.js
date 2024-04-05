@@ -70,7 +70,7 @@ function ChatPage() {
                   <div className="dropdown">
                     <a className="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="/chatpage"
                       id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                      <img src={curuser?.picture} className="rounded-circle" height="22" alt="https://mdbootstrap.com/img/new/avatars/5.jpg"
+                      <img src={curuser?.picture} className="rounded-circle" height="22" alt=""
                         loading="lazy" />
                     </a>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
