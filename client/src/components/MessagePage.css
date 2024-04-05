@@ -1,0 +1,8 @@
+.allmessages{
+    overflow-y: auto;
+    margin: 20px;
+}
+.allmessages::-webkit-scrollbar{
+    display: none;
+    width: 100%;
+}

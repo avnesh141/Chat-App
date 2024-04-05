@@ -1,0 +1,22 @@
+.entity-row:hover{
+    color: black;
+   background: rgb(238,174,202);
+background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+}
+
+.entity-row{
+    overflow: auto;
+}
+
+.entity-row ::-webkit-scrollbar{
+    display: none;
+}
+
+.bg-Selected{
+    background: rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+}
+
+.nameAndEmail{
+    overflow: auto;
+}

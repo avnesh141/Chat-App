@@ -1,0 +1,12 @@
+.desHead{
+    text-align: center;
+}
+
+.desImg{
+    width: 100%;
+    height: 40%;
+}
+
+.detailsItem{
+    overflow: auto;
+}

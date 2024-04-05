@@ -1,0 +1,133 @@
+
+.Container{
+    width: 90vw;
+    justify-items: center;
+    align-content: center;
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: auto;
+    margin-top: 3vh;
+    /* background-color: blue; */
+}
+.mainheader{
+    border-radius: 20px;
+    background: rgb(30, 206, 153);
+}
+
+.mainChat{
+    border-radius:20px;
+     height: 80vh;
+     margin: 10px;
+     display: flex;
+     flex-direction: row;
+     justify-content: space-between;
+     /* overflow-y: auto; */
+}
+    
+.chatlist1{
+    border-radius:20px;
+    /* overflow-y:scroll; */
+    height: 100%;
+    /* background: rgb(138, 186, 215); */
+    width: 30vw;
+    margin-right: 10px;  
+    height: 100%; 
+}
+
+.msgBx {
+    height: 100%;
+    border-radius: 20px;
+}
+.msgBx > div {
+    height: 100%;
+    border-radius: 20px;
+}
+.chatlist1 ul{
+    height: 100%;
+}
+
+.chatlist2{
+    display: flex;
+    flex-direction: column;
+    border-radius:20px;
+    overflow-y:scroll;
+    /* height: 100%; */
+    /* position: fixed; */
+    background: rgba(130, 194, 140, 0.66);
+    width: 60vw;
+    margin-left: 10px;
+    text-align: center;
+    justify-content: space-between;
+    
+}
+.chatlist1::-webkit-scrollbar{
+    display: none;
+}
+.chatlist1 ul::-webkit-scrollbar{
+    display: none;
+}
+.msgBx > div::-webkit-scrollbar{
+    display: none;
+}
+.msgBx::-webkit-scrollbar{
+    display: none;
+}
+
+.chatlist2::-webkit-scrollbar{
+    display: none;
+}
+.chatlist2 h4{
+ text-align: center;
+ display: inline-block;
+}
+.mainChat::-webkit-scrollbar{
+    display: none;
+}
+
+
+
+.DetailsBox{
+    border-radius:20px;
+
+    height: 100%;
+    background: rgb(224, 231, 224);
+    width: 35%;
+}
+
+.chatBox{
+    /* background: rgb(230, 225, 225); */
+    width: 40vw;
+    border-radius:20px;
+}
+
+
+.msgInput{
+    width:80%;
+    /* margin: 10px; */
+    position: relative;
+    /* margin: 10px; */
+    /* bottom: 25px; */
+}
+
+.sendMsg{
+    width: 90%;
+    position: relative;
+    margin-left: 5%;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+.sendMsg .btn {
+    padding: 0;
+    margin-left: 2%;
+    width:  20%;
+    height: 4vh;
+}
+
+
+.Chatwith{
+    border-radius: 50px;
+    /* width: 40%; */
+}

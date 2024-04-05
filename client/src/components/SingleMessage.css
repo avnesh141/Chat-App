@@ -1,0 +1,41 @@
+.leftCli{
+    height: fit-content;
+    position: relative;
+    left: 0;
+    /* background-color: rgb(171, 165, 190); */
+    margin: 10px;
+}
+.rightCli{
+    flex-direction: row-reverse;
+    height: fit-content;
+    position: relative;
+    /* left: 10vw; */
+    /* background-color: rgb(214, 99, 99); */
+    margin: 10px;
+    right: 0;
+}
+.singleMsg{
+    display: flex;
+}
+
+.singleMsg::-webkit-scrollbar{
+    display: none;
+}
+
+.messageInside{
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 15px;
+}
+.messageInside img{
+    border-radius: 30px;
+}
+
+.rightCli >div{
+    flex-direction: row-reverse;
+    background-color: rgb(214, 99, 99);
+}
+.leftCli >div{
+       background-color: rgb(171, 165, 190);
+}
+
