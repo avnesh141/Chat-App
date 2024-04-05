@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import userContext from '../contexts/users/UserContext'
 import SingleMessage from './SingleMessage';
 import "./MessagePage.css"
@@ -9,17 +9,22 @@ function MessagePage() {
     const {user,messages,SendMessage,selected,isLoading,curuser }=usrcntx;
     const [message,setMessage]=useState("");  
      const ele=document.getElementsByClassName('allmessages')[0];
-     const tobottom=()=>{
-      ele.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      // console.log(ele.scrollHeight+10000,"dkkd");
-    }
+     
+     const lastmsgRef=useRef();
+
+     useEffect(() => {
+      // setTimeout(() => {
+        lastmsgRef.current?.scrollIntoView({behaviour:"smooth"});
+      // }, 2000);
+     }, [messages])
+     
+
     UselistenHook();
     // console.log(messages)
     const onchange=(e)=>{
       setMessage(e.target.value);
     }  
     const OnSend=()=>{
-      tobottom();
       if(message)
       {
          if(selected)
@@ -37,7 +42,9 @@ function MessagePage() {
           <div className='allmessages'>
             <div>
            {!isLoading && (messages.length ? (messages.map((msg,id)=>(
-                <SingleMessage key={id} Sid={msg.senderId} message={msg.message}/>
+            <div key={id} ref={lastmsgRef}>
+                <SingleMessage    Sid={msg.senderId} message={msg.message}/>
+             </div>
                 // <h4>Send a message to Start conversation.</h4>
                 ))):<h1>Send a message to start conversation</h1>)
             }
