@@ -20,3 +20,11 @@ background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 
 .nameAndEmail{
     overflow: auto;
 }
+
+.msgBx >div ul{
+    height: 95%;
+    overflow: auto;
+}
+.msgBx >div ul ::-webkit-scrollbar{
+   display: none;
+}

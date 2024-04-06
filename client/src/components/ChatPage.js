@@ -16,13 +16,20 @@ function ChatPage() {
 
   const navigate=useNavigate();
   const usrcntxt=useContext(userContext);
-  const {setCurId,selected,curuser}=usrcntxt;
+  const {setSocket,setallUsers,setCurId,setuser,selected,curuser,setSelected,setmessages,setOnlineUsers,setcuruser}=usrcntxt;
 
   const logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('id');
     setCurId(null);
-     navigate("/");
+    setSelected(null);
+    setmessages(null);
+    setcuruser(null);
+    // setOnlineUsers([]);
+    setuser(null);
+    // setallUsers([]);
+    // setSocket(null);
+     navigate("/login");
   }
 
   return (
@@ -54,14 +61,14 @@ function ChatPage() {
                   </a>
 
                   <div className="dropdown">
-                    <a className="text-reset me-3 dropdown-toggle hidden-arrow" href="/chatpage" id="navbarDropdownMenuLink"
+                    <a className="text-reset me-3 dropdown-toggle hidden-arrow" href="/" id="navbarDropdownMenuLink"
                       role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                       <i className="fas fa-bell"></i>
                     </a>
                   </div>
 
                   <div className="dropdown">
-                    <a className="text-reset dropdown-toggle me-3 hidden-arrow" href="/chatpage" id="navbarDropdown" role="button"
+                    <a className="text-reset dropdown-toggle me-3 hidden-arrow" href="/" id="navbarDropdown" role="button"
                       data-mdb-toggle="dropdown" aria-expanded="false">
                       <i onClick={(e)=>{
                         e.preventDefault();
@@ -71,15 +78,15 @@ function ChatPage() {
                   </div>
 
                   <div className="dropdown">
-                    <a className="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="/chatpage"
+                    <a className="text-reset dropdown-toggle d-flex align-items-center hidden-arrow" href="/"
                       id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                       <img src={curuser?.picture} className="rounded-circle" height="22" alt=""
                         loading="lazy" />
                     </a>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                      <li><a className="dropdown-item" href="/chatpage">My profile</a></li>
-                      <li><a className="dropdown-item" href="/chatpage">Settings</a></li>
-                      <li><a className="dropdown-item" href="/chatpage">Logout</a></li>
+                      <li><a className="dropdown-item" href="/">My profile</a></li>
+                      <li><a className="dropdown-item" href="/">Settings</a></li>
+                      <li><a className="dropdown-item" href="/">Logout</a></li>
                     </ul>
                   </div>
                 </div>
@@ -90,9 +97,9 @@ function ChatPage() {
       </header>
       {/* </div> */}
       {width>800 && <div className='mainChat'>
-        {/* <div className="chatlist1" > */}
+        <div className="chatlist1" >
           <MessageBox />
-        {/* </div> */}
+        </div>
         <MessagePage dis={0}/>
         {/* <div  > */}
             <Description/>
@@ -100,9 +107,9 @@ function ChatPage() {
       </div>}
       { width <=800 &&
         <div className='mainChat2'>
-        {/* <div className="chatlist3" > */}
+        <div className="chatlist3" >
           {selected?<MessagePage dis={1}/>:<MessageBox />}
-        {/* </div> */}
+        </div>
       </div>
       }
     </div>

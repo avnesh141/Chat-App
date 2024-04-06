@@ -46,7 +46,7 @@ const LoginPage = () => {
       const decoded = jwtDecode(JSON.stringify(json.authtoken), JWT_SECRET);
       localStorage.setItem('id',decoded.user.id);
       setCurId(decoded.user.id);
-      navigate("/chatpage");
+      navigate("/");
     }
     else {
       toast.error(json.error)

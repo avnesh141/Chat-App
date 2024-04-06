@@ -15,6 +15,7 @@ function MessagePage(props) {
     const [message,setMessage]=useState("");  
      
      const lastmsgRef=useRef();
+     const topRef=useRef();
 
      useEffect(() => {
       // setTimeout(() => {
@@ -45,7 +46,7 @@ function MessagePage(props) {
          {props.dis==1 && <i onClick={()=>{
            setSelected(null);
          }} className="fa-solid fa-angles-left"></i>} 
-          <h4 className='Chatwith mx-4 bg-white'>Chatting with {user?`${selected==curId?user.name+"(You)":user.name}`:"User"}</h4>
+          <h4 className='Chatwith mx-4 px-4 bg-white'>Chatting with {user?`${selected==curId?user.name+"(You)":user.name}`:"User"}</h4>
         </div>
           
          { selected &&
@@ -73,7 +74,10 @@ function MessagePage(props) {
           }
           <form action='#' className='sendMsg'>
             <input className='msgInput' value={message} onChange={onchange} type='text'/>
-            <input className='btn bg-white ' onClick={OnSend}  type='submit' />
+            <input className='btn bg-white ' onClick={(e)=>{
+              e.preventDefault();
+              OnSend();
+            }}  type='submit' />
           </form>
         </div>
   )

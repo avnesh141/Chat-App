@@ -10,11 +10,12 @@ function UserState(props) {
   const [selected, setSelected] = useState(null);
   const [users, setallUsers] = useState([]);
   const [isLoading,setLoading]=useState(true);
-  const [messages, setmessages] = useState();
-  
+  const [messages, setmessages] = useState(null);
   const [user, setuser] = useState();
-  const [curuser, setcuruser] = useState();
+  const [curuser, setcuruser] = useState(null);
   const [curId, setCurId] = useState(localStorage.getItem('id') || null);
+  const JWT_SECRET = "ThisisSecretKey";
+  
   const getAllUsers = async () => {
     const response = await fetch("api/auth/getusers", {
       method: "GET",
@@ -34,7 +35,6 @@ function UserState(props) {
   }
 
 
-  const JWT_SECRET = "ThisisSecretKey";
 
   
   const getMessages = async (id, token) => {

@@ -57,7 +57,7 @@ const Signup = () => {
       localStorage.setItem('id',decoded.user.id);
       setCurId(decoded.user.id);
       // console.log(typeof curId);
-      navigate("/chatpage");
+      navigate("/");
     } else {
       toast.error(json.error);
     }
