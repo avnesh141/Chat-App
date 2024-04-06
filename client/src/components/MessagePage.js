@@ -3,6 +3,7 @@ import userContext from '../contexts/users/UserContext'
 import SingleMessage from './SingleMessage';
 import "./MessagePage.css"
 import UselistenHook from '../contexts/users/UselistenHook';
+import { Button } from 'primereact/button';
 function MessagePage(props) {
 
    const wid=props.dis?"95%":"60vw";
@@ -10,7 +11,7 @@ function MessagePage(props) {
   //  console.log(wid);
 
     const usrcntx=useContext(userContext);
-    const {user,messages,SendMessage,selected,isLoading,curuser,setSelected}=usrcntx;
+    const {user,messages,SendMessage,selected,isLoading,curuser,setSelected,curId}=usrcntx;
     const [message,setMessage]=useState("");  
      
      const lastmsgRef=useRef();
@@ -21,7 +22,7 @@ function MessagePage(props) {
       // }, 2000);
      }, [messages])
      
-
+  // console.log(messages);
     UselistenHook();
     // console.log(messages)
     const onchange=(e)=>{
@@ -44,7 +45,7 @@ function MessagePage(props) {
          {props.dis==1 && <i onClick={()=>{
            setSelected(null);
          }} className="fa-solid fa-angles-left"></i>} 
-          <h4 className='Chatwith mx-4 bg-white'>Chatting with {user?user.name:"User"}</h4>
+          <h4 className='Chatwith mx-4 bg-white'>Chatting with {user?`${selected==curId?user.name+"(You)":user.name}`:"User"}</h4>
         </div>
           
          { selected &&
@@ -52,7 +53,7 @@ function MessagePage(props) {
             <div>
            {!isLoading && (messages.length ? (messages.map((msg,id)=>(
             <div key={id} ref={lastmsgRef}>
-                <SingleMessage    Sid={msg.senderId} message={msg.message}/>
+                <SingleMessage time={msg.updatedAt}   Sid={msg.senderId} message={msg.message}/>
              </div>
                 // <h4>Send a message to Start conversation.</h4>
                 ))):<h1>Send a message to start conversation</h1>)
@@ -70,10 +71,10 @@ function MessagePage(props) {
               </div>
 
           }
-          <div className='sendMsg'>
-            <input className='msgInput' value={message} onChange={onchange} type='text'></input>
-            <input className='btn bg-white ' onClick={OnSend}  type='button' value='Send'></input>
-          </div>
+          <form action='#' className='sendMsg'>
+            <input className='msgInput' value={message} onChange={onchange} type='text'/>
+            <input className='btn bg-white ' onClick={OnSend}  type='submit' />
+          </form>
         </div>
   )
 }

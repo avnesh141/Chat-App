@@ -34,7 +34,6 @@ function UserState(props) {
   }
 
 
-
   const JWT_SECRET = "ThisisSecretKey";
 
   
@@ -81,10 +80,15 @@ function UserState(props) {
 
   
   useEffect(() => {
-    getAllUsers();
-  },[users])
+    if(curId)
+    {
+      getAllUsers();
+    }
+  },[curId])
   
   useEffect(() => {
+setuser(user?user:curuser);
+
     users.forEach(element => {
       if(element._id===selected)
       {

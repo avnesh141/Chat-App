@@ -14,9 +14,7 @@ import userContext from '../contexts/users/UserContext';
 export default function BottomAppBar() {
   const usercntxt=useContext(userContext);
 
-  const { onlineUsers,selected,setSelected,setLoading,users,getAllUsers,setuser,getMessages}=usercntxt;
-// const scktcntxt= useContext(socketContext);
-// const {onlineUsers}=scktcntxt;
+  const { onlineUsers,selected,setSelected,users,curId}=usercntxt;
 
  
   return (
@@ -39,7 +37,7 @@ export default function BottomAppBar() {
                      { onlineUsers.includes(_id) && <span className="badge rounded-pill badge-notification bg-danger">o</span>}
                       <Avatar alt="Profile Picture" src={picture} />
                     </ListItemAvatar>
-                    <ListItemText className='nameAndEmail' primary={name} secondary={email} />
+                    <ListItemText className='nameAndEmail' primary={`${_id==curId?name+"(You)":name}`} secondary={email} />
                   </ListItemButton>
                 </React.Fragment>
               </div>

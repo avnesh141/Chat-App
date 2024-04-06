@@ -63,7 +63,10 @@ function ChatPage() {
                   <div className="dropdown">
                     <a className="text-reset dropdown-toggle me-3 hidden-arrow" href="/chatpage" id="navbarDropdown" role="button"
                       data-mdb-toggle="dropdown" aria-expanded="false">
-                      <i onClick={logout} className="fas fa-sign-out-alt"></i>
+                      <i onClick={(e)=>{
+                        e.preventDefault();
+                        logout();
+                      }} className="fas fa-sign-out-alt"></i>
                     </a>
                   </div>
 

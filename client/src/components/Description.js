@@ -5,7 +5,6 @@ import userContext from '../contexts/users/UserContext'
 function Description() {
 const usrcntxt=useContext(userContext);
 const {user}=usrcntxt;
-
 // console.log(user)
   return (
     <div className="DetailsBox mx-4">
