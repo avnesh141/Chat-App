@@ -102,7 +102,7 @@ function ChatPage() {
         </div>
         <MessagePage dis={0}/>
         {/* <div  > */}
-            <Descriptio n/>
+            <Description/>
         {/* </div> */}
       </div>}
       { width <=800 &&
