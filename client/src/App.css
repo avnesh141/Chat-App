@@ -1,12 +1,12 @@
 body{
-  background-image: url("/public/bg1.jpg");
+  background-image: url("/public/Mirage.jpg");
 }
 .App {
   text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 40v   min;
   pointer-events: none;
 }
 

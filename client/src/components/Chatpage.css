@@ -13,7 +13,8 @@
 }
 .mainheader{
     border-radius: 20px;
-    background: rgb(30, 206, 153);
+    background: rgb(131,58,180);
+background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(29,253,32,0.9304971988795518) 50%, rgba(252,176,69,1) 100%);
     max-height: 20vh;
 }
 
@@ -53,11 +54,10 @@
     border-radius: 20px;
 }
 .msgBx > div {
-    overflow: auto;
+    /* overflow: auto;   */
     height: 100%;
     border-radius: 20px;
-    background-color: white;
-}
+    background-image: linear-gradient(-225deg, #A445B2 0%, #D41872 52%, #FF0066 100%);}
 .chatlist1 ul{
     overflow: auto;
     height: 95%;
@@ -71,7 +71,7 @@
     /* overflow-y:scroll; */
     /* height: 100%; */
     /* position: fixed; */
-    background: rgba(130, 194, 140, 0.66);
+    background-image: linear-gradient(to right, #92fe9d 0%, #00c9ff 100%);
     width: 60vw;
     margin-left: 10px;
     text-align: center;
@@ -98,9 +98,9 @@
 .chatlist2::-webkit-scrollbar{
     display: none;
 }
-.chatlist2 h4{
- text-align: center;
- display: inline-block;
+.Chatwith{
+    background-image: linear-gradient(-225deg, #A445B2 0%, #D41872 52%, #FF0066 100%);
+     display: inline-block;
  font-size: 100%;
 }
 .mainChat::-webkit-scrollbar{
@@ -111,10 +111,9 @@
 
 .DetailsBox{
     border-radius:20px;
-
     height: 100%;
-    background: rgb(224, 231, 224);
     width: 30%;
+    background-image: linear-gradient(to right, #92fe9d 0%, #00c9ff 100%);
 }
 
 .chatBox{

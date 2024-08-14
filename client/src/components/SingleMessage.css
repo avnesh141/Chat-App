@@ -33,9 +33,9 @@
 
 .rightCli >div{
     flex-direction: row-reverse;
-    background-color: rgb(214, 99, 99);
+    background-image: linear-gradient(to top, #9be15d 0%, #00e3ae 100%);
 }
 .leftCli >div{
-       background-color: rgb(171, 165, 190);
+    background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
 }
 
