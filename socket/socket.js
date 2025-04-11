@@ -18,7 +18,7 @@ const io= new Server(server,{
 const userSocketMap={};
 // console.log("ss");
 io.on('connection',(socket)=>{
-    console.log("connected ",socket.id);
+    // console.log("connected ",socket.id);
 
     const userid = socket.handshake.query.userId;
     // console.log(socket.handshake.query);
@@ -30,7 +30,7 @@ io.on('connection',(socket)=>{
     io.emit("getOnlineUsers",Object.keys(userSocketMap));
 
     socket.on("disconnect",()=>{
-        console.log("disconnected",socket.id);
+        // console.log("disconnected",socket.id);
         delete userSocketMap[userid];
         io.emit("getOnlineUsers",Object.keys(userSocketMap));
     })

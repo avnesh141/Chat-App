@@ -3,10 +3,11 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = "ThisisSecretKey";
 
 const fetchuser = async (req, res, next) => {
-    // console.log("jaoge kaise");
     let success = false;
+    // console.log("jaoge kaise");
     try {
         let token = req.header('authtoken');
+        // console.log("Token",token);
         let data = jwt.decode(JSON.parse(token));
         // console.log(data.email);
         // console.log(data);
@@ -19,7 +20,7 @@ const fetchuser = async (req, res, next) => {
 
     } catch (error) {
         // console.log(error.message);
-        // console.log("Comes Here");
+        // console.log("Comes Here",error);
         res.status(500).send({ error, success });
     }
 }

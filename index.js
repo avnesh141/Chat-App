@@ -35,6 +35,8 @@ connectTomongo();
 
 app.use('/api/auth',require('./routes/auth'));
 app.use('/api/message',require('./routes/message'));
+app.use('/api/group', require('./routes/group'));
+
 
 
 

@@ -1,43 +1,48 @@
-import React, { useContext } from 'react'
-import "./SingleMessage.css";
+
+import React, { useContext } from 'react';
+import './SingleMessage.css';
 import userContext from '../contexts/users/UserContext';
-import {DateDiff} from './DateDiff'
+import { DateDiff } from './DateDiff';
 
-function SingleMessage(props) {
+function SingleMessage({ Sid, message, time }) {
+  const { curId, user, curuser } = useContext(userContext);
 
-  const usrcntxt = useContext(userContext);
-  const { curId, user, curuser } = usrcntxt;
-  const ThisUser = (props.Sid === curId) ? curuser : user;
-  let time = props.time;
-  // console.log(time);
+  const isMe = Sid === curId;
+  const sender = isMe ? curuser : user;
+  const messageDate = new Date(time);
 
+  const localTime = messageDate.toLocaleTimeString('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'Asia/Kolkata'
+  });
 
-  let status=DateDiff(time);
-// console.log(status);
-  time = time.slice(11, 16);
+  const fullTime = messageDate.toLocaleString('en-IN', {
+    dateStyle: 'full',
+    timeStyle: 'short',
+    timeZone: 'Asia/Kolkata'
+  });
 
+  const status = DateDiff(time);
 
-
-  // if()
-  // console.log()
-  // if(curId==props.Sid){
-  // console.log(ThisUser);
-  // }
-  // console.log(ThisUser)
-  // console.log(props.Sid,curId);
   return (
-    <>
-      <h1 style={{display:"block",fontSize:"10px"}}>{status} {time}</h1>
-    <div className={` singleMsg ${((props.Sid === curId) ? 'rightCli' : 'leftCli')}`}  >
-      <div className='messageInside'>
-        <img src={ThisUser ? ThisUser.picture : ""} alt='' style={{ width: "50px", height: "50px" }} />
-        <p className='px-3'>
-          {props.message}
-        </p>
+    <div className={`message-wrapper ${isMe ? 'message-right' : 'message-left'}`}>
+      <div className="message-bubble shadow-sm">
+        <img
+          src={sender?.picture || '/default-avatar.png'}
+          alt="avatar"
+          className="message-avatar"
+        />
+        <div className="message-content">
+          <p className="message-text mb-1">{message}</p>
+          <div className="message-meta text-muted small" title={fullTime}>
+            {status} • {localTime}
+          </div>
+        </div>
       </div>
     </div>
-    </>
-  )
+  );
 }
 
-export default SingleMessage
+export default SingleMessage;
