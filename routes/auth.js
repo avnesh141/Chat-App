@@ -51,6 +51,30 @@ router.post(
   }
 );
 
+
+
+router.put("/addfriend",fetchuser,async(req,res)=>{
+  try {
+    const userid = req.user.id;
+    const {friendId}=req.body;
+    let user=await User.findById(userid);
+    if(!user.contacts.includes(friendId)){
+      user.contacts.push(friendId);
+    }
+    await user.save();
+    let friend=await User.findById(friendId);
+    if(!friend.contacts.includes(userid)){
+      friend.contacts.push(userid);
+    }
+    await friend.save();
+    // console.log(friend.name,user.name);
+    return res.status(200).json({"friend":friend,"success":true}); 
+  } catch (error) {
+    console.log("this",error.message);
+    res.status(500).json({"error":error.message,"success":false});
+  }
+})
+
 router.post(
   "/login",
   body("email", "Please enter valiid Credentials").isEmail(),
@@ -90,16 +114,26 @@ router.post(
   }
 );
 
-router.get("/getusers", fetchuser, async (req, res) => {
+router.get("/getuser", fetchuser, async (req, res) => {
   try {
     const userid = req.user.id;
+    const users = await User.findById(userid).select("-password").populate('contacts');
+    res.send(users);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({error: "Unable to fetch user Details This time" });
+  }
+});
+router.get("/getall",async (req, res) => {
+  try {
     const users = await User.find().select("-password");
     res.send(users);
   } catch (error) {
-
+    console.log(error)
     res.status(500).json({error: "Unable to fetch user Details" });
   }
 });
+
 
 router.post("/signg", fetchuser, async (req, res) => {
   // console.log("aa to gye");

@@ -1,14 +1,14 @@
-const mongoose =require('mongoose')
+const mongoose =require('mongoose');
+const { required } = require('nodemon/lib/config');
 
 const messageSchema= new mongoose.Schema({
     senderId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"user",
+        ref:"User",
         required:true
     },
-    receiverId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"user",
+    chatId:{
+        type:String,
         required:true
     },
     message:{

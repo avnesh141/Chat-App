@@ -8,8 +8,9 @@ function UserState(props) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [selected, setSelected] = useState(null);
   const [users, setallUsers] = useState([]);
+  const [friends,setFriends]=useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [messages, setmessages] = useState(null);
+  const [messages, setmessages] = useState({});
   const [user, setuser] = useState();
   const [curuser, setcuruser] = useState(null);
   const [curId, setCurId] = useState(localStorage.getItem('id') || null);
@@ -17,6 +18,7 @@ function UserState(props) {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [groupChat, setGroupChat] = useState(null);
+
 
   const [theme, setTheme] = useState('light');
 
@@ -27,7 +29,7 @@ function UserState(props) {
   const JWT_SECRET = "ThisisSecretKey";
 
   const getAllUsers = async () => {
-    const response = await fetch("api/auth/getusers", {
+    const response = await fetch("api/auth/getall", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -35,13 +37,21 @@ function UserState(props) {
       },
     });
     const json = await response.json();
-    await json.forEach(element => {
-      if (element._id === curId) {
-        setcuruser(element);
-      }
-    });
+    // console.log(json)
     setallUsers(json);
-    fetchUserGroups(); // Ensure groups are fetched after users
+  };
+  const getFriends = async () => {
+    const response = await fetch("api/auth/getuser", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "authtoken": JSON.stringify(localStorage.getItem("token")),
+      },
+    });
+    const json = await response.json();
+    // console.log("fri",json.contacts)
+    setcuruser(json);
+    setFriends([...json.contacts,json]);
   };
 
   const fetchUserGroups = async () => {
@@ -58,39 +68,35 @@ function UserState(props) {
     }
   };
 
-  const getMessages = async (id, token) => {
-    const decoded = jwtDecode(JSON.stringify(token), JWT_SECRET);
-    const response1 = await fetch(`api/message/get/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "authtoken": JSON.stringify(token),
-      }
-    });
-    const json1 = await response1.json();
-    let msgs = [];
-    if (json1.success) {
-      msgs = json1.messages;
-      const authtoken = json1.authtoken;
-      const response2 = await fetch(`api/message/get/${decoded.user.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "authtoken": JSON.stringify(authtoken),
-        }
-      });
-      const json2 = await response2.json();
-      if (json2.success && decoded.user.id !== id) {
-        msgs = msgs.concat(json2.messages);
-      }
-      if (msgs.length === 0) return;
-      msgs.sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
-    }
-    setmessages(msgs);
-    setLoading(false);
-  };
+  const getChatId=(id1,id2)=>{
+    return [id1,id2].sort().join('_');
+  }
 
-  const getGroupMessages = async (groupId) => {
+  const getMessages = async (id, token) => {
+    const chatId=getChatId(id,curId);
+    // console.log(messages[chatId].length);
+      // console.log("nhi Aaye");
+      const response=await fetch(`/api/message/get/${id}`,{
+        method:"GET",
+        headers:{
+          "Content-Type":"application/json",
+        "authtoken":JSON.stringify(token),
+      }
+    })
+    const json=await response.json();
+    if(json.success)
+      {
+        setmessages(prev => ({
+          ...prev,
+          [chatId]: json.messages,
+        }));
+      }
+      setLoading(false);
+    };
+    
+    const getGroupMessages = async (groupId) => {
+      // console.log(messages[groupId]);
+      // console.log(" Group me bhi nhi Aaye");
     const response = await fetch(`api/group/get/${groupId}`, {
       method: "GET",
       headers: {
@@ -100,7 +106,10 @@ function UserState(props) {
     });
     const json = await response.json();
     if (json.success) {
-      setmessages(json.messages);
+      setmessages(prev => ({
+        ...prev,
+        [groupId]: json.messages,
+      }));
     }
     setLoading(false);
   };
@@ -115,7 +124,10 @@ function UserState(props) {
       body: JSON.stringify({ message })
     });
     const json = await response.json();
-    setmessages(prev => [...prev, json]);
+    setmessages(prev =>({
+      ...prev,
+      [groupId]: [...(prev[groupId] || []),json.message],
+    }));
   };
 
   const createGroup = async (groupName, memberIds) => {
@@ -136,29 +148,33 @@ function UserState(props) {
   useEffect(() => {
     if (curId) {
       getAllUsers();
+      fetchUserGroups();
+      getFriends();
     }
   }, [curId]);
 
   useEffect(() => {
+    setLoading(true);
     setuser(user || curuser);
-    users.forEach(element => {
-      if (element._id === selected) {
-        setuser(element);
+    friends?.forEach(friend => {
+      if (friend._id === selected) {
+        setuser(friend);
       }
     });
 
     if (selected) {
       getMessages(selected, localStorage.getItem("token"));
+      // console.log(messages);
     }
 
     if (selectedGroup) {
       getGroupMessages(selectedGroup);
     }
-
-    setLoading(true);
+    setLoading(false)
   }, [selected, selectedGroup]);
 
   const SendMessage = async (id, message, token) => {
+    const chatId=getChatId(id,curId);
     const response = await fetch(`api/message/send/${id}`, {
       method: "POST",
       headers: {
@@ -168,7 +184,10 @@ function UserState(props) {
       body: JSON.stringify({ message })
     });
     const json = await response.json();
-    setmessages(prev => [...prev, json]);
+    setmessages(prev =>({
+      ...prev,
+      [chatId]: [...(prev[chatId] || []),json.message],
+    }));
   };
 
   useEffect(() => {
@@ -192,6 +211,23 @@ function UserState(props) {
     }
   }, [curId]);
 
+
+  const addFriend=async(friendId)=>{
+          const response =await fetch("api/auth/addfriend",{
+            method:"PUT",
+            headers:{
+              "authtoken":JSON.stringify(localStorage.getItem('token')),
+              "Content-Type":"application/json"
+            },
+            body:JSON.stringify({friendId})
+            }
+          )
+          const json=await response.json();
+          if(json.success){
+              setFriends([...friends,json.friend]);
+          }
+  }
+
   return (
     <userContext.Provider
       value={{
@@ -200,7 +236,7 @@ function UserState(props) {
         user, setuser, messages, setmessages, getMessages, curId,
         groups, setGroups, selectedGroup, setSelectedGroup, groupChat, setGroupChat,
         getGroupMessages, sendGroupMessage, createGroup, fetchUserGroups,
-        theme, toggleTheme
+        theme, toggleTheme,friends,setFriends,addFriend,getChatId
       }}
     >
       {props.children}

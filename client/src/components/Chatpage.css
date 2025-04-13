@@ -30,6 +30,7 @@
     background: #ffffff;
     border-bottom: 1px solid #dee2e6;
     padding: 1rem 0;
+    color: black;
   }
   
   .mainheader h3 {
@@ -44,6 +45,7 @@
     flex-direction: row;
     gap: 1rem;
     padding: 1rem;
+    color : black;
   }
   
   @media screen and (max-width: 800px) {
@@ -60,5 +62,5 @@
     height: 30px;
     width: 30px;
   }
-
+  
   

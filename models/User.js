@@ -26,15 +26,20 @@ const UserSchema = new Schema({
     default: Date.now(),
     required: true,
   },
-  Contacts:{
-    type:Array,
+  contacts:{
+    type:[
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     default:[]
   },
   picture:{
     type:String,
-    default:"https://img.freepik.com/free-psd/3d-icon-social-media-app_23-2150049569.jpg?w=740&t=st=1696077818~exp=1696078418~hmac=485f46cbe800d22ce26e0fef07fd93a343bcce09ba1419555c1e46ec3e40eacf",
+    default:"user.png",
   }
 });
-const User = mongoose.model("user", UserSchema);
+const User = mongoose.model("User", UserSchema);
 User.createIndexes();
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

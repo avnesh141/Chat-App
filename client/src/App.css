@@ -1,5 +1,6 @@
 body{
   background-image: url("/public/Mirage.jpg");
+  color: black;
 }
 .App {
   text-align: center;
@@ -39,3 +40,4 @@ body{
     transform: rotate(360deg);
   }
 }
+

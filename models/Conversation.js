@@ -3,12 +3,12 @@ const mongoose =require('mongoose')
 const ConversationSchema=new mongoose.Schema({
   senderId:{
     type:mongoose.Schema.Types.ObjectId,
-    ref:"user"
+    ref:"User"
   },
   receiverIds:[
     {
         type:mongoose.Schema.Types.ObjectId,
-        ref:"user"
+        ref:"User"
     }
   ],
   messages:[
@@ -19,6 +19,6 @@ const ConversationSchema=new mongoose.Schema({
   ],
 },{timestamps:true});
 
-const Conversation=mongoose.model('conversation',ConversationSchema);
+const Conversation=mongoose.model('Conversation',ConversationSchema);
 
 module.exports=Conversation;

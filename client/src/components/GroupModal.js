@@ -29,7 +29,7 @@ function GroupModal({ closeModal }) {
 
   return (
     <div className="group-modal">
-      <div className="modal-content">
+      <div className="modal-content text-center" style={{"backgroundColor":"teal","borderRadius":"10px","padding":"10px"}}>  
         <h4 className="mb-3">Create a Group</h4>
         <input
           type="text"

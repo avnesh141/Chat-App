@@ -8,6 +8,11 @@ const JWT_SECRET = "ThisisSecretKey";
 const router =express.Router();
 const {io}=require('../socket/socket');
 
+
+const getChatId = (id1, id2) => {
+    return [id1, id2].sort().join('_');
+};
+
 router.post('/send/:id',fetchuser,async (req,res)=>{
     
     try {
@@ -15,36 +20,12 @@ router.post('/send/:id',fetchuser,async (req,res)=>{
         const senderId = req.user.id;
         const receiverId=req.params.id;
         const {message}= req.body;
-
-        let conversation= await Conversation.findOne({
-            receiverIds:{
-                $all:[receiverId]
-            },
-            senderId:senderId
-        });
-        // console.log(conversation);
-        if(!conversation){
-           conversation = await Conversation.create({
-                receiverIds:[receiverId],
-                senderId:senderId
-            });
-        }
-        
-        // console.log(conversation);
-        const newMessage = await Message.create({
-            senderId:senderId,
-            receiverId:receiverId,
+      
+        const newMessage=await Message.create({
             message:message,
-        });
-        // console.log(newMessage);
-        // console.log("smsdm");
-        if(newMessage){
-            // console.log("first");
-            conversation.messages.push(newMessage._id);
-        }
-        await conversation.save();
-        // console.log("godnd")
-
+            senderId:senderId,
+            chatId:getChatId(senderId,receiverId)
+        })
       const receiverSocketId=getReceiverSocketId(receiverId);
     //   console.log(receiverSocketId);
          if(receiverSocketId)
@@ -52,7 +33,7 @@ router.post('/send/:id',fetchuser,async (req,res)=>{
              io.to(receiverSocketId).emit("newMessage",newMessage);
          }
     
-        res.status(201).json(newMessage);
+        res.status(201).json({"message":newMessage});
 
     } catch (error) {
         console.log(error.message);
@@ -64,34 +45,14 @@ router.post('/send/:id',fetchuser,async (req,res)=>{
 router.get('/get/:id',fetchuser,async (req,res)=>{
     let success=false;
     try {
-         
         const senderId = req.user.id;
         const receiverId=req.params.id;
-        let conversation= await Conversation.findOne({
-            receiverIds:{
-                $all:[receiverId]
-            },
-            senderId:senderId
-        }).populate("messages");
-        let messages=[];
-        // console.log("first")
-        const data = {
-            user: {
-              id: req.params.id,
-            },
-          };
-        const authtoken = jwt.sign(data, JWT_SECRET);
-        if(conversation==null)
-        {
-            success=true;
-            // console.log("first")
-            return res.status(200).json({success,messages,authtoken});
-            // return;
-        }
-        messages=conversation.messages;
+        const chatId=getChatId(senderId,receiverId);
+        const messages=await Message.find({chatId});
         success=true;
-        res.status(201).json({success,messages,authtoken});
+        res.status(201).json({success,messages});
     } catch (error) {
+        console.log(error.message);
         res.status(501).json({success});
     }
 })

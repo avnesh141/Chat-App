@@ -7,13 +7,15 @@ import { useNavigate } from 'react-router-dom';
 import MessagePage from './MessagePage';
 import userContext from '../contexts/users/UserContext';
 import GroupModal from './GroupModal';
+import FriendModal from './FriendModal';
 
 function ChatPage() {
   const width = window.innerWidth;
   const [showGroupModal, setShowGroupModal] = useState(false);
+  const [showfriendModal, setShowFriendModal] = useState(false);
   const navigate = useNavigate();
   const {
-    setCurId, setuser, selected, curuser, setSelected,
+    setCurId,selectedGroup, setuser, selected, curuser, setSelected,
     setmessages, setcuruser, theme, toggleTheme
   } = useContext(userContext);
 
@@ -26,7 +28,7 @@ function ChatPage() {
     setuser(null);
     navigate("/login");
   };
-
+// console.log(curuser)
   return (
     <div className={`Container ${theme}`}>
       <header className="mainheader">
@@ -65,7 +67,7 @@ function ChatPage() {
       {width > 800 && (
         <div className="mainChat">
           <div className="chatlist1">
-            <MessageBox openGroupModal={() => setShowGroupModal(true)} />
+            <MessageBox openGroupModal={() => setShowGroupModal(true)} openFriendModal={()=>setShowFriendModal(true)} />
           </div>
           <MessagePage dis={0} />
           <Description />
@@ -75,14 +77,15 @@ function ChatPage() {
       {width <= 800 && (
         <div className="mainChat2">
           <div className="chatlist3">
-            {selected
+            {selected || selectedGroup
               ? <MessagePage dis={1} />
-              : <MessageBox openGroupModal={() => setShowGroupModal(true)} />}
+              : <MessageBox openGroupModal={() => setShowGroupModal(true)} openFriendModal={()=>setShowFriendModal(true)} />}
           </div>
         </div>
       )}
 
       {showGroupModal && <GroupModal closeModal={() => setShowGroupModal(false)} />}
+      {showfriendModal && <FriendModal closeModal={()=>setShowFriendModal(false)}/>}
     </div>
   );
 }

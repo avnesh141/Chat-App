@@ -8,30 +8,32 @@ import Avatar from '@mui/material/Avatar';
 import './MessageBox.css';
 import userContext from '../contexts/users/UserContext';
 
-function MessageBox({ openGroupModal }) {
+function MessageBox({ openGroupModal,openFriendModal }) {
   const {
     onlineUsers, selected, setSelected,
-    users, curId, groups, messages,
+    friends, curId, groups, messages,
     setGroupChat, setSelectedGroup,
-    selectedGroup
+    selectedGroup,getChatId,theme
   } = useContext(userContext);
 
-
+  const [chatId,setChatId]=useState(null);
   const handleGroupClick = (group) => {
     setSelected(null);
     setSelectedGroup(group._id);
     setGroupChat(group);
+    setChatId(selectedGroup);
   };
 
   const handleUserClick = (_id) => {
     setSelectedGroup(null);
     setSelected(_id);
+    setChatId(getChatId(curId,selected));
   };
 
   
 
   const getLastMessage = (userId) => {
-    const reversed = [...messages].reverse();
+    const reversed = [...messages[chatId]].reverse();
     const last = reversed.find(
       (m) => m.senderId === userId || m.receiverId === userId
     );
@@ -39,13 +41,18 @@ function MessageBox({ openGroupModal }) {
   };
 
   return (
-    <div className="msgBx">
-      <Paper square elevation={1} className="p-3">
+    <div className={`msgBx ${theme}`}>
+      <Paper square elevation={1} className="p-3" style={{"minHeight":"75vh"}} >
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="mb-0">Inbox</h4>
-          <button className="btn btn-sm btn-outline-primary" onClick={openGroupModal}>
+          <div>
+          <button className="btn btn-sm btn-outline-primary mx-3" onClick={openGroupModal}>
             + Group
           </button>
+          <button className="btn btn-sm btn-outline-primary" onClick={openFriendModal}>
+            + Friend
+          </button>
+          </div>
         </div>
 
         <List>
@@ -69,10 +76,10 @@ function MessageBox({ openGroupModal }) {
             </>
           )}
 
-          {users?.length > 0 && (
+          {friends?.length > 0 && (
             <>
-              <p className="text-muted fw-bold px-3 mt-3">Users</p>
-              {users.map(({ _id, name, email, picture }) => (
+              <p className="text-muted fw-bold px-3 mt-3">Contacts</p>
+              {friends.map(({ _id, name, email, picture }) => (
                 <div
                   key={_id}
                   className={`entity-row ${selected === _id ? 'bg-warning bg-opacity-25' : ''}`}
@@ -89,7 +96,7 @@ function MessageBox({ openGroupModal }) {
                     </ListItemAvatar>
                     <ListItemText
                       primary={_id === curId ? `${name} (You)` : name}
-                      secondary={messages && getLastMessage(_id) || email}
+                      secondary={messages && messages[chatId] && getLastMessage(_id) || email}
                     />
                   </ListItemButton>
                 </div>
