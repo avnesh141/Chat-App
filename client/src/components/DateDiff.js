@@ -1,42 +1,19 @@
 
  export function DateDiff(date) {
-  let year = date.slice(0, 4);
-  let month = date.slice(5, 7);
-  let day = date.slice(8, 10);
-  let hours = date.slice(11, 13);
-  let minutes = date.slice(14, 16);
-  let seconds = date.slice(17, 19);
-  let time = new Date();
-  // console.log(time);
-  let curryear = time.getFullYear();
-  let currmonth = time.getMonth() + 1;
-  let currday = time.getDate();
-  let currhours = time.getHours();
-  let currminutes = time.getMinutes();
-  let currseconds = time.getSeconds();
-  // console.log(time.getMonth(), month, currhours, currminutes, currseconds);
-  // console.log(year);
-  let ans = "";
-  if (curryear - year > 1) {
-    ans = "Very long ago";
-  }
-  else if (curryear == year && currmonth == month) {
-    if (currday - day == 1) {
-      ans = "Yesterday";
-    }
-    else if (currday == day) {
-      ans = "Today";
-    }
-    else {
-      ans = date.slice(0, 10);
-    }
-  }
-  else if (curryear - year == 1) {
-    ans = "1 Year ago";
-  }
-  else {
-    ans = date.slice(0, 10);
-  }
-  // console.log(ans);
-  return ans;
+  const now = new Date();
+  const diffMs = now - new Date(date);
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffSeconds < 60) return "just now";
+  if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  if (diffDays === 1) return "yesterday";
+  if (diffDays <= 7) return `${diffDays} days ago`;
+  
+  const d = new Date(date);
+  const options = { day: 'numeric', month: 'short', year: now.getFullYear() !== d.getFullYear() ? 'numeric' : undefined };
+  return d.toLocaleDateString(undefined, options);
 }

@@ -37,7 +37,7 @@ const UserSchema = new Schema({
   },
   picture:{
     type:String,
-    default:"user.png",
+    default:"user.webp",
   }
 });
 const User = mongoose.model("User", UserSchema);

@@ -11,23 +11,23 @@ function MessagePage({ dis }) {
   const {
     user, messages, SendMessage, selected, isLoading,
     curuser, setSelected, curId, selectedGroup, setSelectedGroup,
-    sendGroupMessage, groupChat,getChatId
+    sendGroupMessage, groupChat, getChatId
   } = usrcntx;
-  
- 
-  const [chatId,setChatId]=useState(null);
+
+
+  const [chatId, setChatId] = useState(null);
   useEffect(() => {
     // console.log(messages)
-    if(selected){
-      setChatId(getChatId(curId,selected));
+    if (selected) {
+      setChatId(getChatId(curId, selected));
     }
-    else{
+    else {
       setChatId(selectedGroup);
     }
     // console.log(chatId)
     //  console.log(messages)
-  }, [selected,selectedGroup])
-  
+  }, [selected, selectedGroup])
+
   // setChatId(getChatId(curId,selected));
   const [message, setMessage] = useState("");
   const lastmsgRef = useRef();
@@ -119,36 +119,37 @@ function MessagePage({ dis }) {
         </div>
 
         {/* Footer - Message Input */}
-        <div>
-        <form
-          className="p-3 d-flex gap-2 align-items-center"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSend();
-          }}
+        <div ref={emojiRef}>
+          <form
+            className="p-3 d-flex gap-2 align-items-center"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSend();
+            }}
           >
-          <div className='msgInput' ref={emojiRef}>
-            <input
-              className="form-control"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type your message..."
+            <div className='msgInput' >
+              <input
+                className="form-control"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type your message..."
               />
-          </div>
+            </div>
             <i onClick={(e) => {
               setShowEmoji(!showEmoji);
             }} className="fa-solid fa-face-smile"></i>
-          <button type="submit" className="btn btn-primary">Send</button>
-        </form>
-            </div>
-          <div >
+            <button type="submit" className="btn btn-primary">Send</button>
+          </form>
+          <div>
             <EmojiPicker
               theme='dark'
               autoFocusSearch={false}
               onEmojiClick={handleEmojiClick}
               width={"90%"}
+              height={'45vh'}
               open={showEmoji} />
           </div>
+        </div>
       </div>
     </div>
   );

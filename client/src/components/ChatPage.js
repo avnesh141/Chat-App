@@ -8,6 +8,7 @@ import MessagePage from './MessagePage';
 import userContext from '../contexts/users/UserContext';
 import GroupModal from './GroupModal';
 import FriendModal from './FriendModal';
+import { Avatar } from '@mui/material';
 
 function ChatPage() {
   const width = window.innerWidth;
@@ -34,7 +35,7 @@ function ChatPage() {
       <header className="mainheader">
         <div className="container-fluid py-2 px-4 d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
-            <img src="/logo.png" alt="Logo" height="40" className="me-3" />
+            <Avatar src="logo.webp" alt="Logo" height="40" className="me-3" />
             <h3 className="mb-0">ChatApp</h3>
           </div>
           <form className="d-none d-md-flex align-items-center w-50">
@@ -51,11 +52,11 @@ function ChatPage() {
               {theme === 'light' ? '🌙' : '☀️'}
             </button>
             
-            <img className='logoutImg' src="logout.png" onClick={logout} style={{ cursor: 'pointer' }}/>
+            <Avatar className='logoutImg' src="logout.webp" alt="User" onClick={logout} style={{ cursor: 'pointer' }}/>
             {curuser?.picture && (
-              <img
+              <Avatar
                 src={curuser.picture}
-                alt="User"
+                alt={curuser.name}
                 className="rounded-circle"
                 height="30"
               />

@@ -15,7 +15,7 @@ function Description() {
       {selectedGroup && groupChat ?
         (<>
           <img
-            src="/group.png"
+            src="/group.webp"
             alt="Group"
             className="desImg mb-3"
           />
@@ -37,9 +37,9 @@ function Description() {
         </>
         ) : user ? (
           <>
-            <img
+            <Avatar
               src={user.picture || '/default-avatar.png'}
-              alt="User"
+              alt={user.name}
               className="desImg mb-3"
             />
             <h4 className="detailsItem mb-2 text-center">Name: {user.name}</h4>

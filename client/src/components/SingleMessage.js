@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import './SingleMessage.css';
 import userContext from '../contexts/users/UserContext';
 import { DateDiff } from './DateDiff';
+import { Avatar } from '@mui/material';
 
 function SingleMessage({ Sid, message, time }) {
   const { curId, user, curuser } = useContext(userContext);
@@ -29,9 +30,9 @@ function SingleMessage({ Sid, message, time }) {
   return (
     <div className={`message-wrapper ${isMe ? 'message-right' : 'message-left'}`}>
       <div className="message-bubble shadow-sm">
-        <img
-          src={sender?.picture || '/default-avatar.png'}
-          alt="avatar"
+        <Avatar
+          src={sender?.picture || '/user.webp'}
+          alt={sender?.name || 'User'}
           className="message-avatar"
         />
         <div className="message-content">

@@ -67,7 +67,7 @@ function MessageBox({ openGroupModal,openFriendModal }) {
                 >
                   <ListItemButton>
                     <ListItemAvatar>
-                      <Avatar alt="Group" src="/group.png" />
+                      <Avatar alt="Group" src="/group.webp" />
                     </ListItemAvatar>
                     <ListItemText primary={group.name} secondary="Group Chat" />
                   </ListItemButton>
@@ -92,7 +92,7 @@ function MessageBox({ openGroupModal,openFriendModal }) {
                           <span className="visually-hidden">Online</span>
                         </span>
                       )}
-                      <Avatar alt="Profile" src={picture || '/user.png'} />
+                      <Avatar alt={name} src={picture || '/user.webp'} />
                     </ListItemAvatar>
                     <ListItemText
                       primary={_id === curId ? `${name} (You)` : name}
