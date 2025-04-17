@@ -14,15 +14,10 @@ const { MONGODB_URI } = require("./config/key");
 const port = process.env.PORT || 5000;
 
 
-const connectparams = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-
 mongoose.set('strictQuery', 'true');
 
 const connectTomongo = () => {
-    mongoose.connect(MONGODB_URI,connectparams).then(() => {
+    mongoose.connect(MONGODB_URI).then(() => {
         console.log("connected to mongo Succesfully");
     }).catch((error) => {
         console.log(error);
@@ -50,6 +45,6 @@ app.use('/api/group', require('./routes/group'));
 // }
 
 
-server.listen(port,()=>{
+server.listen(port,'0.0.0.0',()=>{
     console.log("App listening at port number 5000")
 })

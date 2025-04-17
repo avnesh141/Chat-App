@@ -13,10 +13,11 @@ function App() {
     <>
       <UserState>
       <ToastContainer/>
+     
    <Router>
     <Routes>
     <Route exact path="/login" element={<LoginPage />} />
-    <Route exact path="/" element={<ChatPage />} />
+    <Route  path="/*" element={<ChatPage />} />
     <Route exact path="/signup" element={<Signup />} />
     <Route exact path="*" element={<Navigate to="/" />} />
     </Routes>

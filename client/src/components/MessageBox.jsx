@@ -7,6 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import './MessageBox.css';
 import userContext from '../contexts/users/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 function MessageBox({ openGroupModal,openFriendModal }) {
   const {
@@ -16,6 +17,7 @@ function MessageBox({ openGroupModal,openFriendModal }) {
     selectedGroup,getChatId,theme
   } = useContext(userContext);
 
+  const navigate=useNavigate();
   const [chatId,setChatId]=useState(null);
   const handleGroupClick = (group) => {
     setSelected(null);
@@ -46,11 +48,16 @@ function MessageBox({ openGroupModal,openFriendModal }) {
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="mb-0">Inbox</h4>
           <div>
-          <button className="btn btn-sm btn-outline-primary mx-3" onClick={openGroupModal}>
+          <button className="btn btn-sm btn-outline-primary mx-1" onClick={openGroupModal}>
             + Group
           </button>
-          <button className="btn btn-sm btn-outline-primary" onClick={openFriendModal}>
+          <button className="btn btn-sm btn-outline-primary mx-1" onClick={openFriendModal}>
             + Friend
+          </button>
+          <button className="btn btn-sm btn-outline-primary mx-1" onClick={()=>{
+            navigate('/lobby');
+          }}>
+            + 🎦
           </button>
           </div>
         </div>

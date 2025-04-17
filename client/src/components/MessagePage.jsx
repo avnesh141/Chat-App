@@ -5,15 +5,17 @@ import SingleMessage from './SingleMessage';
 import './MessagePage.css';
 import UselistenHook from '../contexts/users/UselistenHook';
 import EmojiPicker from 'emoji-picker-react';
+import { Avatar } from '@mui/material';
+import VideoCallModal from './VideoCallModal';
 
 function MessagePage({ dis }) {
   const usrcntx = useContext(userContext);
   const {
     user, messages, SendMessage, selected, isLoading,
     curuser, setSelected, curId, selectedGroup, setSelectedGroup,
-    sendGroupMessage, groupChat, getChatId
+    sendGroupMessage, groupChat, getChatId,setShowCall
   } = usrcntx;
-
+ 
 
   const [chatId, setChatId] = useState(null);
   useEffect(() => {
@@ -86,8 +88,10 @@ function MessagePage({ dis }) {
           ></i>
         )}
         <h5 className="Chatwith">Chatting with {chattingWith}</h5>
+        {selected && <div>
+          <Avatar src="telephone.webp" alt="call" onClick={() => setShowCall(true)} />
+        </div>}
       </div>
-
       {/* Main Content */}
       <div className="flex-grow-1 d-flex flex-column overflow-hidden">
         <div className="allmessages flex-grow-1 overflow-auto px-3 py-2">

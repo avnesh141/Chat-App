@@ -4,10 +4,10 @@ import userContext from './UserContext';
 function UselistenHook() {
 
     const { socket, messages, setmessages } = useContext(userContext);
-    console.log(socket);
+    // console.log(socket);
     useEffect(() => {
         socket?.on("newMessage",(newMessage)=>{
-            console.log(newMessage);
+            // console.log(newMessage);
             setmessages(prev => ({
                 ...prev,
                 [newMessage.chatId]:[...(prev[newMessage.chatId] || []),newMessage],
