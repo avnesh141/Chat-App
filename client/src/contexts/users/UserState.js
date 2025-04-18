@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import userContext from './UserContext'
-import { ReactPlayer } from "react-player"
 import io from "socket.io-client"
 
 function UserState(props) {
-  const [incomingCall, setIncomingCall] = useState(null);
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -15,7 +13,6 @@ function UserState(props) {
   const [user, setuser] = useState();
   const [curuser, setcuruser] = useState(null);
   const [curId, setCurId] = useState(localStorage.getItem('id') || null);
-  const [showCall, setShowCall] = useState(false);
 
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -28,7 +25,6 @@ function UserState(props) {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const JWT_SECRET = "ThisisSecretKey";
 
   const getAllUsers = async () => {
     try {
@@ -244,7 +240,7 @@ function UserState(props) {
       getGroupMessages(selectedGroup);
     }
     setLoading(false)
-  }, [selected, selectedGroup]);
+  }, [selected, selectedGroup,friends,curuser,user]);
 
 
   useEffect(() => {
@@ -314,7 +310,6 @@ function UserState(props) {
       }}
     >
       {props.children}
-      {/* {stream && <ReactPlayer url={stream}/>} */}
 
     </userContext.Provider>
   );
