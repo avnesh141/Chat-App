@@ -20,12 +20,12 @@ router.post(
     if (!errors.isEmpty()) {
       // console.log(errors[0].msg);
       // console.log(errors[0].msg);
-      res.status(400).send(errors);
+      res.status(400).json({success,errors});
     } else {
       const email = req.body.email;
       let user = await User.findOne({ email });
       if (user) {
-        return res.status(400).send({ error: "User already exists" });
+        return res.status(400).send({success:false, error: "User already exists" });
       } else {
         const password = req.body.password;
         const salt = await bcrypt.genSalt(10);
@@ -70,7 +70,7 @@ router.put("/addfriend",fetchuser,async(req,res)=>{
     // console.log(friend.name,user.name);
     return res.status(200).json({"friend":friend,"success":true}); 
   } catch (error) {
-    console.log("this",error.message);
+    console.log("Add Friend ",error.message)
     res.status(500).json({"error":error.message,"success":false});
   }
 })
@@ -94,11 +94,11 @@ router.post(
       let user = await User.findOne({ email });
       // res.status(400).send({error:"eee"});
       if (!user) {
-        return res.status(400).json({ error: "Enter Valid Credentials" });
+        return res.status(400).json({success, error: "Enter Valid Credentials" });
       }
       const passcmp = await bcrypt.compare(password, user.password);
       if (!passcmp) {
-        return res.status(400).json({ error: "Enter Valid Credentials" });
+        return res.status(400).json({ success,error: "Enter Valid Credentials" });
       }
       const data = {
         user: {
@@ -109,28 +109,33 @@ router.post(
       success = true;
       res.status(200).json({ success, authtoken });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.log("Login ",error.message)
+      res.status(500).json({success, error: error.message });
     }
   }
 );
 
 router.get("/getuser", fetchuser, async (req, res) => {
+  let success=false;
   try {
     const userid = req.user.id;
-    const users = await User.findById(userid).select("-password").populate('contacts');
-    res.send(users);
+    const user = await User.findById(userid).select("-password").populate('contacts');
+    success=true;
+    res.json({success,user});
   } catch (error) {
-    console.log(error)
-    res.status(500).json({error: "Unable to fetch user Details This time" });
+    console.log("Get User ",error.message)
+    res.status(500).json({success,error: "Unable to fetch user Details This time" });
   }
 });
 router.get("/getall",async (req, res) => {
+  let success=false;
   try {
     const users = await User.find().select("-password");
-    res.send(users);
+    success=true;
+    res.json({users,success});
   } catch (error) {
-    console.log(error)
-    res.status(500).json({error: "Unable to fetch user Details" });
+    console.log("Get All ",error.message)
+    res.status(500).json({success,error: "Unable to fetch user Details" });
   }
 });
 
@@ -151,7 +156,7 @@ router.post("/signg", fetchuser, async (req, res) => {
    success=true;
    res.status(200).json({success});
   } catch (error) {
-    // console.log("Good Bye");
+    console.log("Sign Google ",error.message)
     res.status(500).json({ "error":error.message,"success":success });
   }
 });
@@ -181,6 +186,7 @@ router.put("/update", fetchuser,async (req, res) => {
         res.status(200).json({success,user});
 
     } catch (error) {
+      console.log("Update ",error.message);
         res.json({ success,error });
     }
 })

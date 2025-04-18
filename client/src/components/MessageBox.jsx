@@ -9,16 +9,16 @@ import './MessageBox.css';
 import userContext from '../contexts/users/UserContext';
 import { useNavigate } from 'react-router-dom';
 
-function MessageBox({ openGroupModal,openFriendModal }) {
+function MessageBox({ openGroupModal, openFriendModal }) {
   const {
     onlineUsers, selected, setSelected,
     friends, curId, groups, messages,
     setGroupChat, setSelectedGroup,
-    selectedGroup,getChatId,theme
+    selectedGroup, getChatId, theme
   } = useContext(userContext);
 
-  const navigate=useNavigate();
-  const [chatId,setChatId]=useState(null);
+  const navigate = useNavigate();
+  const [chatId, setChatId] = useState(null);
   const handleGroupClick = (group) => {
     setSelected(null);
     setSelectedGroup(group._id);
@@ -29,67 +29,77 @@ function MessageBox({ openGroupModal,openFriendModal }) {
   const handleUserClick = (_id) => {
     setSelectedGroup(null);
     setSelected(_id);
-    setChatId(getChatId(curId,selected));
+    setChatId(getChatId(curId, selected));
   };
 
-  
+
 
   const getLastMessage = (userId) => {
-    const reversed = [...messages[chatId]].reverse();
-    return reversed[0].message;
+    const thisChat= getChatId(curId,userId);
+    if(!messages || !messages[thisChat])return "";
+    const reversed = [...messages[thisChat]].reverse();
+    return reversed[0]?.message;
   };
 
   return (
     <div className={`msgBx ${theme}`}>
-      <Paper square elevation={1} className="p-3" style={{"height":"100%"}} >
+      <Paper square elevation={1} className="p-3" style={{ "height": "100%" }} >
         <div className="d-flex justify-content-between align-items-center mb-3 messageBoxHead">
           <h4 className="mb-0">Inbox</h4>
           <div>
-          <button className="btn btn-sm btn-outline-primary mx-1" onClick={openGroupModal}>
-            + Group
-          </button>
-          <button className="btn btn-sm btn-outline-primary mx-1" onClick={openFriendModal}>
-            + Friend
-          </button>
-          <button className="btn btn-sm btn-outline-primary mx-1" onClick={()=>{
-            navigate('/lobby');
-          }}>
-            + 🎦
-          </button>
+            <button className="btn btn-sm btn-outline-primary mx-1" onClick={openGroupModal}>
+              + Group
+            </button>
+            <button className="btn btn-sm btn-outline-primary mx-1" onClick={openFriendModal}>
+              + Friend
+            </button>
+            <button className="btn btn-sm btn-outline-primary mx-1" onClick={() => {
+              navigate('/lobby');
+            }}>
+              + 🎦
+            </button>
           </div>
         </div>
 
         <List className='userList'>
           {groups?.length > 0 && (
-            <>
+              <React.Fragment key="groups-section">
               <p className="text-muted fw-bold px-3">Groups</p>
               {groups?.map(group => (
-                <div
-                  key={group._id}
-                  className={`entity-row group-row ${selectedGroup === group._id ? 'bg-info bg-opacity-25' : ''}`}
-                  onClick={() => handleGroupClick(group)}
-                >
-                  <ListItemButton>
+                // <div
+                //   key={group._id}
+                //   className={`entity-row group-row ${selectedGroup === group._id ? 'bg-info bg-opacity-25' : ''}`}
+                //   onClick={() => handleGroupClick(group)}
+                // >
+                  <ListItemButton
+                   key={group._id}
+                   className={`entity-row group-row ${selectedGroup === group._id ? 'bg-info bg-opacity-25' : ''}`}
+                   onClick={() => handleGroupClick(group)}
+                  >
                     <ListItemAvatar>
                       <Avatar alt="Group" src="/group.webp" />
                     </ListItemAvatar>
                     <ListItemText primary={group.name} secondary="Group Chat" />
                   </ListItemButton>
-                </div>
+                // </div>
               ))}
-            </>
+             </React.Fragment>
           )}
 
           {friends?.length > 0 && (
-            <>
+            <React.Fragment key="friends-section">
               <p className="text-muted fw-bold px-3 mt-3">Contacts</p>
               {friends?.map(({ _id, name, email, picture }) => (
-                <div
+                // <div
+                //   key={_id}
+                //   className={`entity-row ${selected === _id ? 'bg-warning bg-opacity-25' : ''}`}
+                //   onClick={() => handleUserClick(_id)}
+                // >
+                  <ListItemButton
                   key={_id}
                   className={`entity-row ${selected === _id ? 'bg-warning bg-opacity-25' : ''}`}
                   onClick={() => handleUserClick(_id)}
-                >
-                  <ListItemButton>
+                  >
                     <ListItemAvatar>
                       {onlineUsers?.includes(_id) && (
                         <span className="badge bg-success position-absolute translate-middle p-1 rounded-circle">
@@ -100,12 +110,12 @@ function MessageBox({ openGroupModal,openFriendModal }) {
                     </ListItemAvatar>
                     <ListItemText
                       primary={_id === curId ? `${name} (You)` : name}
-                      secondary={messages && messages[chatId] && getLastMessage(_id) || email}
+                      secondary={getLastMessage(_id)}
                     />
                   </ListItemButton>
-                </div>
+                // </div>
               ))}
-            </>
+             </React.Fragment>
           )}
         </List>
       </Paper>

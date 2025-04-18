@@ -7,6 +7,7 @@ const { io } = require('../socket/socket');
 
 // Create a new group
 router.post('/create', fetchuser, async (req, res) => {
+  let success=false;
   try {
     const { groupName, memberIds } = req.body;
     const group = await Group.create({
@@ -14,15 +15,17 @@ router.post('/create', fetchuser, async (req, res) => {
       members: [...memberIds, req.user.id],
       createdBy: req.user.id,
     });
-    res.status(201).json(group);
+    success=true;
+    res.status(201).json({group,success});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Failed to create group' });
+    res.status(500).json({ message: 'Failed to create group' ,success});
   }
 });
 
 // Send a message to group
 router.post('/send/:groupId', fetchuser, async (req, res) => {
+  let success=false;
   try {
     const { message } = req.body;
     const senderId = req.user.id;
@@ -47,16 +50,17 @@ router.post('/send/:groupId', fetchuser, async (req, res) => {
         }
       }
     });
-
-    res.status(201).json({"message":newMessage});
+    success=true;
+    res.status(200).json({"message":newMessage,success});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Failed to send message' });
+    res.status(500).json({ success,message: 'Failed to send message' });
   }
 });
 
 // Fetch group messages
 router.get('/get/:groupId', fetchuser, async (req, res) => {
+  let success=false;
   try {
     const groupId = req.params.groupId;
     const group = await Group.findById(groupId).populate('messages').populate('createdBy');
@@ -65,11 +69,12 @@ router.get('/get/:groupId', fetchuser, async (req, res) => {
     res.status(200).json({ success: true, messages: group.messages });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Failed to fetch messages' });
+    res.status(500).json({ success,message: 'Failed to fetch messages' });
   }
 });
 
 router.get('/user', fetchuser, async (req, res) => {
+  let success=false;
   try {
     // console.log("Arrived to group route");
     const userId = req.user.id;

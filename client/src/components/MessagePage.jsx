@@ -124,7 +124,7 @@ function MessagePage({ dis }) {
         <div className="allmessages flex-grow-1 overflow-auto px-3 py-2">
           {(selected || selectedGroup) ? (
             !isLoading ? (
-              messages[chatId]?.length ? (
+              messages && messages[chatId]?.length ? (
                 messages[chatId]?.map((message, id) => (
                   <div key={id} ref={lastmsgRef}>
                     {/* {console.log(message)} */}
@@ -132,8 +132,8 @@ function MessagePage({ dis }) {
                       time={message?.updatedAt}
                       Sid={message?.senderId}
                       message={message?.message}
-                      url={message.fileUrl}
-                      messageType={message.messageType}
+                      url={message?.fileUrl}
+                      messageType={message?.messageType}
                     />
                   </div>
                 ))

@@ -59,6 +59,7 @@ const getChatId = (id1, id2) => {
 
 
 router.post('/send/:id', fetchuser, upload.single('file'), async (req, res) => {
+    let success=false;
     try {
         const senderId = req.user.id;
         const receiverId = req.params.id;
@@ -77,7 +78,7 @@ router.post('/send/:id', fetchuser, upload.single('file'), async (req, res) => {
             newMsgData.messageType = "text";
             newMsgData.message = message;
         } else {
-            return res.status(400).json({ error: "No message or file provided" });
+            return res.status(400).json({ error: "No message or file provided",success });
         }
 
         const newMessage = await Message.create(newMsgData);
@@ -90,12 +91,12 @@ router.post('/send/:id', fetchuser, upload.single('file'), async (req, res) => {
         if (senderSocketId) {
             io.to(senderSocketId).emit("newMessage", newMessage);
         }
-
-        res.status(201).json({ message: newMessage });
+        success=true;
+        res.status(200).json({ message: newMessage,success });
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({ error: "Internal Server Error." });
+        res.status(500).json({ error: "Internal Server Error.",success });
     }
 });
 
