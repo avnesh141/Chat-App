@@ -6,16 +6,21 @@ import './MessagePage.css';
 import UselistenHook from '../contexts/users/UselistenHook';
 import EmojiPicker from 'emoji-picker-react';
 import { Avatar } from '@mui/material';
-import VideoCallModal from './VideoCallModal';
 
 function MessagePage({ dis }) {
+
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null);
+
+
   const usrcntx = useContext(userContext);
   const {
     user, messages, SendMessage, selected, isLoading,
     curuser, setSelected, curId, selectedGroup, setSelectedGroup,
-    sendGroupMessage, groupChat, getChatId,setShowCall
+    sendGroupMessage, groupChat, getChatId, setShowCall
   } = usrcntx;
- 
+
 
   const [chatId, setChatId] = useState(null);
   useEffect(() => {
@@ -60,21 +65,42 @@ function MessagePage({ dis }) {
 
   UselistenHook();
 
-  const handleSend = () => {
-    if (!message.trim()) return;
+  const handleSend = async () => {
+    if (!message.trim() && !selectedFile) return;
+  
     if (selectedGroup) {
-      sendGroupMessage(selectedGroup, message);
+      await sendGroupMessage(selectedGroup, message, selectedFile);
     } else if (selected) {
-      SendMessage(selected, message, localStorage.getItem('token'));
+      await SendMessage(selected, message, selectedFile);
     }
+  
     setMessage("");
+    clearPreview(); 
   };
+  
 
   const chattingWith = selectedGroup
     ? groupChat?.name || "Group"
     : user
       ? `${selected === curId ? user.name + " (You)" : user.name}`
       : "User";
+
+  const handleFileIconClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewURL(URL.createObjectURL(file));
+    }
+  };
+
+  const clearPreview = () => {
+    setSelectedFile(null);
+    setPreviewURL(null);
+  };
 
   return (
     <div className="chatlist2 d-flex flex-column w-100">
@@ -90,6 +116,7 @@ function MessagePage({ dis }) {
         <h5 className="Chatwith">Chatting with {chattingWith}</h5>
         {selected && <div>
           <Avatar src="telephone.webp" alt="call" onClick={() => setShowCall(true)} />
+
         </div>}
       </div>
       {/* Main Content */}
@@ -105,6 +132,8 @@ function MessagePage({ dis }) {
                       time={message?.updatedAt}
                       Sid={message?.senderId}
                       message={message?.message}
+                      url={message.fileUrl}
+                      messageType={message.messageType}
                     />
                   </div>
                 ))
@@ -124,6 +153,22 @@ function MessagePage({ dis }) {
 
         {/* Footer - Message Input */}
         <div ref={emojiRef}>
+          {previewURL && (
+            <div className="file-preview d-flex align-items-center p-2 gap-2">
+              <img
+                src={previewURL}
+                alt="preview"
+                style={{ maxHeight: '100px', borderRadius: '8px' }}
+              />
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={clearPreview}
+              >
+                ❌
+              </button>
+            </div>
+          )}
+
           <form
             className="p-3 d-flex gap-2 align-items-center"
             onSubmit={(e) => {
@@ -131,6 +176,20 @@ function MessagePage({ dis }) {
               handleSend();
             }}
           >
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
+
+            {/* Clickable Paperclip Icon */}
+            <i
+              className="fa fa-paperclip"
+              aria-hidden="true"
+              onClick={handleFileIconClick}
+              style={{ cursor: 'pointer', fontSize: '18px', color: '#555' }}
+            ></i>
             <div className='msgInput' >
               <input
                 className="form-control"

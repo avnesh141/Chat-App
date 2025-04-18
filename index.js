@@ -5,6 +5,8 @@ app.use(express.json());
 const mongoose = require('mongoose');
 var cors = require('cors');
 app.use(cors());
+app.use('/uploads', express.static('uploads'));
+
 // const path=require('path')
 
 const dotenv = require("dotenv");
@@ -13,6 +15,11 @@ const { MONGODB_URI } = require("./config/key");
 // console.log(MONGODB_URI);
 const port = process.env.PORT || 5000;
 
+const fs = require('fs');
+const uploadsDir = './uploads';
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
 
 mongoose.set('strictQuery', 'true');
 

@@ -4,13 +4,15 @@ import './SingleMessage.css';
 import userContext from '../contexts/users/UserContext';
 import { DateDiff } from './DateDiff';
 import { Avatar } from '@mui/material';
+import ChatFilePreview from './ChatFilePreView';
 
-function SingleMessage({ Sid, message, time }) {
+function SingleMessage({ Sid, message,messageType, time,url }) {
   const { curId, user, curuser } = useContext(userContext);
 
   const isMe = Sid === curId;
   const sender = isMe ? curuser : user;
   const messageDate = new Date(time);
+  // console.log(message,messageType);
 
   const localTime = messageDate.toLocaleTimeString('en-IN', {
     hour: '2-digit',
@@ -36,7 +38,8 @@ function SingleMessage({ Sid, message, time }) {
           className="message-avatar"
         />
         <div className="message-content">
-          <p className="message-text mb-1">{message}</p>
+
+          {messageType=="text"?<p className="message-text mb-1">{message}</p>:<ChatFilePreview fileUrl={url}/>}
           <div className="message-meta text-muted small" title={fullTime}>
             {status} • {localTime}
           </div>

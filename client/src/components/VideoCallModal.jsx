@@ -7,27 +7,27 @@ const VideoCallModal = () => {
 
   const { curId, selected, socket } = useContext(userContext);
 
-const [remotSocketId,setRemoteSocketId]=useState();
-  const handleUserJoined=useCallback(({email,id})=>{
-       console.log("email: ",email,"id: ",id,"joined the room");
-       setRemoteSocketId(id);
-  },[])
+  const [remotSocketId, setRemoteSocketId] = useState();
+  const handleUserJoined = useCallback(({ email, id }) => {
+    console.log("email: ", email, "id: ", id, "joined the room");
+    setRemoteSocketId(id);
+  }, [])
 
   useEffect(() => {
-    if(!socket)return;
-    socket.on("user:joined",handleUserJoined);
-    
+    if (!socket) return;
+    socket.on("user:joined", handleUserJoined);
+
     return () => {
-      socket.off("user:joined",handleUserJoined);
+      socket.off("user:joined", handleUserJoined);
     }
-  }, [socket,handleUserJoined])
-  
+  }, [socket, handleUserJoined])
+
 
   const [canCall, setCanCall] = useState(false);
 
   const [myStream, setMyStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
-  const [remoteId,setRemoteId]=useState(null);
+  const [remoteId, setRemoteId] = useState(null);
 
 
   const handleClick = useCallback(() => {
@@ -40,7 +40,7 @@ const [remotSocketId,setRemoteSocketId]=useState();
 
   const handleCallUser = useCallback(async () => {
     setRemoteId(selected)
-    console.log(remoteId,selected);
+    console.log(remoteId, selected);
     const stream = await navigator.mediaDevices.getUserMedia(
       {
         audio: true,
@@ -65,11 +65,11 @@ const [remotSocketId,setRemoteSocketId]=useState();
     socket.emit("call:accepted", { to: from, ans });
   }, [socket])
 
-  const sendStreams=useCallback(()=>{
+  const sendStreams = useCallback(() => {
     for (const track of myStream.getTracks()) {
       peer.peer.addTrack(track, myStream);
     }
-  },[myStream])
+  }, [myStream])
 
   const handleCallAccepted = useCallback(async ({ from, ans }) => {
     await peer.setLocalDescription(ans);
@@ -80,9 +80,9 @@ const [remotSocketId,setRemoteSocketId]=useState();
   const handleNegotiationNeeded = useCallback(async () => {
     const offer = await peer.getOffer();
     // console
-    console.log("peer nego",remoteId," ",curId);
+    console.log("peer nego", remoteId, " ", curId);
     socket.emit('peer:nego:needed', { offer, to: remotSocketId });
-  }, [socket,remotSocketId])
+  }, [socket, remotSocketId])
 
   useEffect(() => {
 
@@ -104,7 +104,7 @@ const [remotSocketId,setRemoteSocketId]=useState();
 
   }, [])
 
-  const handleNegoNeededIncoming = useCallback(async ({from, offer}) => {
+  const handleNegoNeededIncoming = useCallback(async ({ from, offer }) => {
     console.log("incoming nego");
     const ans = await peer.getAnswer(offer);
     socket.emit("peer:nego:done", { to: from, ans })
@@ -129,19 +129,19 @@ const [remotSocketId,setRemoteSocketId]=useState();
       socket.off("peer:nego:needed", handleNegoNeededIncoming);
       socket.off("peer:nego:final", handlenegoFinal);
     }
-  }, [socket,handleCallAccepted,handleNegoNeededIncoming])
+  }, [socket, handleCallAccepted, handleNegoNeededIncoming])
 
 
   return (
-    <div className="container align-items-center text-center mx-5">
+    <div className="container align-items-center text-center mx-5 flex-column">
       <h1>Video Room</h1>
       {remotSocketId &&
-      <div>
-       <h2>Connected</h2>
-               <button onClick={handleCallUser}>
-        Call
-      </button>
-      </div>}
+        <div>
+          <h2>Connected</h2>
+          <button onClick={handleCallUser}>
+            Call
+          </button>
+        </div>}
       {remoteStream &&
         <>
           <h2>Remote</h2>
@@ -151,7 +151,7 @@ const [remotSocketId,setRemoteSocketId]=useState();
 
       {myStream &&
         <>
-        <button className="btn btn-primary" onClick={sendStreams}>send Streams</button>
+          <button className="btn btn-primary" onClick={sendStreams}>send Streams</button>
           <h2>My Stream</h2>
           <ReactPlayer muted playing url={myStream} />
         </>

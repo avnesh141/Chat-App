@@ -1,22 +1,35 @@
-const mongoose =require('mongoose');
+const mongoose = require('mongoose');
 const { required } = require('nodemon/lib/config');
 
-const messageSchema= new mongoose.Schema({
-    senderId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required:true
+const messageSchema = new mongoose.Schema({
+    senderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
     },
-    chatId:{
-        type:String,
-        required:true
+    chatId: {
+        type: String,
+        required: true
     },
-    message:{
+    messageType:{
+          type:String,
+          enum:["text","file"],
+          required:true
+    },
+    message: {
+        type: String,
+        required: ()=>{
+            return this.messageType==="text";
+        },
+    },
+    fileUrl:{
         type:String,
-        required:true,
+        required:()=>{
+            return this.messageType==="file";
+        }
     }
-},{timestamps:true});
+}, { timestamps: true });
 
-const Message=mongoose.model("Message",messageSchema);
+const Message = mongoose.model("Message", messageSchema);
 
-module.exports=Message;
+module.exports = Message;

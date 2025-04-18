@@ -6,7 +6,7 @@
     border-radius: 0.75rem;
     padding: 1rem;
     overflow-y: auto;
-    height: 80vh;
+    height: 100%;
   }
   
   .allmessages {
@@ -26,5 +26,11 @@
     /* padding: 0.75rem; */
     /* border: 1px solid #ccc; */
     border-radius: 0.5rem;
+  }
+  .file-preview {
+    background: #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin: 10px;
   }
   

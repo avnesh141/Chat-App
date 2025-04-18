@@ -36,16 +36,13 @@ function MessageBox({ openGroupModal,openFriendModal }) {
 
   const getLastMessage = (userId) => {
     const reversed = [...messages[chatId]].reverse();
-    const last = reversed.find(
-      (m) => m.senderId === userId || m.receiverId === userId
-    );
-    return last ? last.message : '';
+    return reversed[0].message;
   };
 
   return (
     <div className={`msgBx ${theme}`}>
-      <Paper square elevation={1} className="p-3" style={{"minHeight":"75vh"}} >
-        <div className="d-flex justify-content-between align-items-center mb-3">
+      <Paper square elevation={1} className="p-3" style={{"height":"100%"}} >
+        <div className="d-flex justify-content-between align-items-center mb-3 messageBoxHead">
           <h4 className="mb-0">Inbox</h4>
           <div>
           <button className="btn btn-sm btn-outline-primary mx-1" onClick={openGroupModal}>
@@ -62,11 +59,11 @@ function MessageBox({ openGroupModal,openFriendModal }) {
           </div>
         </div>
 
-        <List>
+        <List className='userList'>
           {groups?.length > 0 && (
             <>
               <p className="text-muted fw-bold px-3">Groups</p>
-              {groups.map(group => (
+              {groups?.map(group => (
                 <div
                   key={group._id}
                   className={`entity-row group-row ${selectedGroup === group._id ? 'bg-info bg-opacity-25' : ''}`}
@@ -86,7 +83,7 @@ function MessageBox({ openGroupModal,openFriendModal }) {
           {friends?.length > 0 && (
             <>
               <p className="text-muted fw-bold px-3 mt-3">Contacts</p>
-              {friends.map(({ _id, name, email, picture }) => (
+              {friends?.map(({ _id, name, email, picture }) => (
                 <div
                   key={_id}
                   className={`entity-row ${selected === _id ? 'bg-warning bg-opacity-25' : ''}`}
@@ -94,7 +91,7 @@ function MessageBox({ openGroupModal,openFriendModal }) {
                 >
                   <ListItemButton>
                     <ListItemAvatar>
-                      {onlineUsers.includes(_id) && (
+                      {onlineUsers?.includes(_id) && (
                         <span className="badge bg-success position-absolute translate-middle p-1 rounded-circle">
                           <span className="visually-hidden">Online</span>
                         </span>

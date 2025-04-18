@@ -14,7 +14,7 @@ function UselistenHook() {
               }));
            })
           return ()=> socket?.off("newMessage");
-    },[messages,setmessages,socket]);
+    },[socket]);
 }
 
 export default UselistenHook

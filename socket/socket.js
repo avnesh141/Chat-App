@@ -81,14 +81,14 @@ io.on('connection', (socket) => {
 })
 
 
-const getReceiverSocketId = (receiverId) => {
+const getSocketId = (receiverId) => {
   return userSocketMap[receiverId];
 }
 
 
 
 // console.log("")
-module.exports = { app, server, io, getReceiverSocketId };
+module.exports = { app, server, io, getSocketId };
 
 
 

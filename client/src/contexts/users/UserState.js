@@ -115,21 +115,68 @@ function UserState(props) {
     setLoading(false);
   };
 
-  const sendGroupMessage = async (groupId, message) => {
-    const response = await fetch(`api/group/send/${groupId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "authtoken": JSON.stringify(localStorage.getItem("token")),
-      },
-      body: JSON.stringify({ message })
-    });
-    const json = await response.json();
-    setmessages(prev => ({
-      ...prev,
-      [groupId]: [...(prev[groupId] || []), json.message],
-    }));
+  // const sendGroupMessage = async (groupId, message) => {
+  //   const response = await fetch(`api/group/send/${groupId}`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "authtoken": JSON.stringify(localStorage.getItem("token")),
+  //     },
+  //     body: JSON.stringify({ message })
+  //   });
+  //   const json = await response.json();
+  //   setmessages(prev => ({
+  //     ...prev,
+  //     [groupId]: [...(prev[groupId] || []), json.message],
+  //   }));
+  // };
+
+
+  const sendGroupMessage = async (groupId, message, file = null) => {
+    try {
+      const formData = new FormData();
+      if (file) formData.append('file', file);
+      if (message?.trim()) formData.append('message', message);
+  
+      const res = await fetch(`/api/group/send/${groupId}`, {
+        method: 'POST',
+        headers: {
+          'authtoken': JSON.stringify(localStorage.getItem('token')),
+        },
+        body: formData,
+      });
+  
+      const data = await res.json();
+      return data.message;
+  
+    } catch (err) {
+      console.error("sendGroupMessage error:", err);
+    }
   };
+  
+    const SendMessage = async (receiverId, message, file = null) => {
+      try {
+        const formData = new FormData();
+        if (file) formData.append('file', file);
+        if (message?.trim()) formData.append('message', message);
+    
+        const res = await fetch(`/api/message/send/${receiverId}`, {
+          method: 'POST',
+          headers: {
+            'authtoken': JSON.stringify(localStorage.getItem('token')),
+          },
+          body: formData,
+        });
+    
+        const data = await res.json();
+        // Optionally update messages state with new message
+        return data.message;
+    
+      } catch (err) {
+        console.error("SendMessage error:", err);
+      }
+    };
+  
 
   const createGroup = async (groupName, memberIds) => {
     const response = await fetch("api/group/create", {
@@ -174,22 +221,23 @@ function UserState(props) {
     setLoading(false)
   }, [selected, selectedGroup]);
 
-  const SendMessage = async (id, message, token) => {
-    const chatId = getChatId(id, curId);
-    const response = await fetch(`api/message/send/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "authtoken": JSON.stringify(token)
-      },
-      body: JSON.stringify({ message })
-    });
-    const json = await response.json();
-    setmessages(prev => ({
-      ...prev,
-      [chatId]: [...(prev[chatId] || []), json.message],
-    }));
-  };
+  // const SendMessage = async (id, message, token) => {
+  //   const chatId = getChatId(id, curId);
+  //   const response = await fetch(`api/message/send/${id}`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "authtoken": JSON.stringify(token)
+  //     },
+  //     body: JSON.stringify({ message })
+  //   });
+  //   const json = await response.json();
+  //   setmessages(prev => ({
+  //     ...prev,
+  //     [chatId]: [...(prev[chatId] || []), json.message],
+  //   }));
+  // };
+  
 
   useEffect(() => {
     if (curId) {
