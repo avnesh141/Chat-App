@@ -14,6 +14,7 @@ function GroupModal({ closeModal }) {
     if (!selectedUsers.length) return alert("Please select at least one user.");
 
     try {
+      console.log("djdj");
       await createGroup(groupName, selectedUsers);
       closeModal();
     } catch (err) {
@@ -21,9 +22,9 @@ function GroupModal({ closeModal }) {
     }
   };
 
-  const toggleUser = (id) => {
+  const toggleUser = (user) => {
     setSelectedUsers((prev) =>
-      prev.includes(id) ? prev.filter((uid) => uid !== id) : [...prev, id]
+      prev.includes(user) ? prev.filter((p_user) => p_user !== user ) : [...prev, user]
     );
   };
 
@@ -45,8 +46,8 @@ function GroupModal({ closeModal }) {
               <input
                 type="checkbox"
                 className="form-check-input"
-                checked={selectedUsers.includes(user._id)}
-                onChange={() => toggleUser(user._id)}
+                checked={selectedUsers.includes(user)}
+                onChange={() => toggleUser(user)}
               />
               <label className="form-check-label ms-2">{user.name}</label>
             </div>

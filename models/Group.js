@@ -17,7 +17,13 @@ const groupSchema = new Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
-  }
+  },
+  senderKeys: [
+    { 
+      user: mongoose.Schema.Types.ObjectId,
+      encryptedSenderKey: String 
+    }
+  ],
 }, { timestamps: true });
 
 module.exports = mongoose.model("Group", groupSchema);

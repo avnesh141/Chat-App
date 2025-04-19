@@ -35,7 +35,10 @@ router.post(
           name: req.body.name,
           email: req.body.email,
           number:req.body.number,
+          encryptedPrivateKey:req.body.encryptedPrivateKey,
           password: secPass,
+          salt:req.body.salt,
+          publicKey:req.body.publicKey
         });
         const data = {
           user: {
@@ -43,9 +46,8 @@ router.post(
           },
         };
         success = true;
-        // const id=user.i
         const authtoken = jwt.sign(data, JWT_SECRET);
-        res.json({ success, authtoken});
+        res.json({ success, authtoken,id:user.id});
       }
     }
   }
@@ -107,7 +109,7 @@ router.post(
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
       success = true;
-      res.status(200).json({ success, authtoken });
+      res.status(200).json({ success, authtoken,id:user.id });
     } catch (error) {
       console.log("Login ",error.message)
       res.status(500).json({success, error: error.message });
@@ -128,6 +130,7 @@ router.get("/getuser", fetchuser, async (req, res) => {
   }
 });
 router.get("/getall",async (req, res) => {
+  console.log("getALl")
   let success=false;
   try {
     const users = await User.find().select("-password");

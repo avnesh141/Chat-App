@@ -12,9 +12,10 @@ function UselistenHook() {
                 ...prev,
                 [newMessage.chatId]:[...(prev[newMessage.chatId] || []),newMessage],
               }));
+              console.log("newMessage",newMessage);
            })
           return ()=> socket?.off("newMessage");
-    },[socket]);
+    },[socket,setmessages]);
 }
 
 export default UselistenHook

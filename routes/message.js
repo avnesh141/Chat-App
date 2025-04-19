@@ -1,10 +1,7 @@
 const express = require('express');
 const fetchuser = require('../middleware/fetchuser');
-const Conversation = require('../models/Conversation');
 const Message = require('../models/Message');
-const jwt = require("jsonwebtoken");
 const { getSocketId } = require('../socket/socket');
-const JWT_SECRET = "ThisisSecretKey";
 const router = express.Router();
 const { io } = require('../socket/socket');
 
@@ -59,11 +56,14 @@ const getChatId = (id1, id2) => {
 
 
 router.post('/send/:id', fetchuser, upload.single('file'), async (req, res) => {
-    let success=false;
+    let success = false;
     try {
         const senderId = req.user.id;
         const receiverId = req.params.id;
-        const { message } = req.body;
+        const { encryptedMessage } = req.body;
+        const { encryptedSenderKey } = req.body;
+        const { encryptedReceiverKey } = req.body;
+        console.log(encryptedReceiverKey);
         const file = req.file;
 
         const newMsgData = {
@@ -74,12 +74,14 @@ router.post('/send/:id', fetchuser, upload.single('file'), async (req, res) => {
         if (file) {
             newMsgData.messageType = "file";
             newMsgData.fileUrl = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
-        } else if (message?.trim()) {
+        } else{
             newMsgData.messageType = "text";
-            newMsgData.message = message;
-        } else {
-            return res.status(400).json({ error: "No message or file provided",success });
-        }
+            newMsgData.encryptedMessage = encryptedMessage;
+            newMsgData.encryptedKeys={
+                sender:encryptedSenderKey,
+                receiver:encryptedReceiverKey
+            }
+        } 
 
         const newMessage = await Message.create(newMsgData);
 
@@ -91,12 +93,12 @@ router.post('/send/:id', fetchuser, upload.single('file'), async (req, res) => {
         if (senderSocketId) {
             io.to(senderSocketId).emit("newMessage", newMessage);
         }
-        success=true;
-        res.status(200).json({ message: newMessage,success });
+        success = true;
+        res.status(200).json({ message: newMessage, success });
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({ error: "Internal Server Error.",success });
+        res.status(500).json({ error: "Internal Server Error.", success });
     }
 });
 

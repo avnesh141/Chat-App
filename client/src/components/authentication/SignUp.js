@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./Signup.css";
 import userContext from "../../contexts/users/UserContext";
-import { jwtDecode } from "jwt-decode";
+import { encryptPrivateKey, generateRSAKeyPair } from "../../contexts/users/MessageEncryption";
 const Signup = () => {
 
   const usrcntx = useContext(userContext);
@@ -39,7 +39,15 @@ const Signup = () => {
       toast.error("confirm password not matched");
       return;
     }
+    const {privateKey,publicKey}=generateRSAKeyPair();
+    console.log(credential.password,privateKey);
+    const {encryptedPrivateKey,salt}=encryptPrivateKey(privateKey,JSON.stringify(credential.password));
+    credential.encryptedPrivateKey=encryptedPrivateKey;
+    credential.publicKey=publicKey;
+    console.log(salt);
+    credential.salt=salt;
     toast.success("Wait Your Request is processing")
+
     const response = await fetch(`api/auth/register`, {
       method: "POST",
       headers: {
@@ -48,15 +56,12 @@ const Signup = () => {
       body: JSON.stringify(credential),
     });
     const json = await response.json();
-    // console.log(json);
     if (json.success) {
       toast.success("Registered SuccessFully");
       localStorage.setItem("token", json.authtoken);
-      const JWT_SECRET = "ThisisSecretKey";
-      const decoded = jwtDecode(JSON.stringify(json.authtoken), JWT_SECRET);
-      localStorage.setItem('id',decoded.user.id);
-      setCurId(decoded.user.id);
-      // console.log(typeof curId);
+      localStorage.setItem('id',json.id);
+      localStorage.setItem('password',credential.password);
+      setCurId(json.id);
       navigate("/");
     } else {
       toast.error(json.error);
@@ -123,9 +128,9 @@ const Signup = () => {
             }}
             value="SignUp"
           />
-        <div className="AlrSignUp">
-        <Link to={"/"}>Already Registered Login here</Link>
-        </div>
+          <div className="AlrSignUp">
+            <Link to={"/"}>Already Registered Login here</Link>
+          </div>
         </form>
       </div>
     </div>

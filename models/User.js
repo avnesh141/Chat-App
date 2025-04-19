@@ -11,7 +11,6 @@ const UserSchema = new Schema({
     required: true,
     unique: false,
   },
-
   number: {
     type: Number,
     default:null
@@ -20,6 +19,15 @@ const UserSchema = new Schema({
     type: String,
     unique: false,
     default:null
+  },
+  salt:{
+       type:String,     
+  },
+  publicKey: {
+    type:String,
+  },
+  encryptedPrivateKey: {
+    type:String,
   },
   date: {
     type: Date,

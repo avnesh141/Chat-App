@@ -6,6 +6,7 @@ import './MessagePage.css';
 import UselistenHook from '../contexts/users/UselistenHook';
 import EmojiPicker from 'emoji-picker-react';
 import { Avatar } from '@mui/material';
+import { decryptForUser, decryptWithAES, encryptForUser, encryptWithAES, SendMessage } from '../contexts/users/MessageEncryption';
 
 function MessagePage({ dis }) {
 
@@ -16,9 +17,10 @@ function MessagePage({ dis }) {
 
   const usrcntx = useContext(userContext);
   const {
-    user, messages, SendMessage, selected, isLoading,
+    user, messages, selected, isLoading,
     curuser, setSelected, curId, selectedGroup, setSelectedGroup,
-    sendGroupMessage, groupChat, getChatId, setShowCall
+    sendGroupMessage, groupChat, getChatId, setShowCall,
+    selectedChat, senderKey
   } = usrcntx;
 
 
@@ -67,17 +69,22 @@ function MessagePage({ dis }) {
 
   const handleSend = async () => {
     if (!message.trim() && !selectedFile) return;
-  
+
     if (selectedGroup) {
-      await sendGroupMessage(selectedGroup, message, selectedFile);
+      if (!senderKey) return;
+      const encryptedMessage = encryptWithAES(message, senderKey);
+      await sendGroupMessage(selectedGroup, encryptedMessage, selectedFile);
     } else if (selected) {
-      await SendMessage(selected, message, selectedFile);
+      console.log(message);
+      await SendMessage(selected, selectedChat.publicKey, curuser.publicKey, message, selectedFile);
     }
-  
+
     setMessage("");
-    clearPreview(); 
+    clearPreview();
   };
-  
+
+  // const 
+  const [key, setKey] = useState("");
 
   const chattingWith = selectedGroup
     ? groupChat?.name || "Group"
@@ -127,12 +134,15 @@ function MessagePage({ dis }) {
               messages && messages[chatId]?.length ? (
                 messages[chatId]?.map((message, id) => (
                   <div key={id} ref={lastmsgRef}>
+                    {/* {(message.senderId==curId?)} */}
                     {/* {console.log(message)} */}
                     <SingleMessage
                       time={message?.updatedAt}
                       Sid={message?.senderId}
-                      message={message?.message}
+                      keys={message.encryptedKeys}
+                      message={message?.encryptedMessage}
                       url={message?.fileUrl}
+                      isGroup={!selected}
                       messageType={message?.messageType}
                     />
                   </div>

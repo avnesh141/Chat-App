@@ -1,18 +1,45 @@
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './SingleMessage.css';
 import userContext from '../contexts/users/UserContext';
 import { DateDiff } from './DateDiff';
 import { Avatar } from '@mui/material';
 import ChatFilePreview from './ChatFilePreView';
+import { decryptForUser, decryptWithAES } from '../contexts/users/MessageEncryption';
 
-function SingleMessage({ Sid, message,messageType, time,url }) {
-  const { curId, user, curuser } = useContext(userContext);
+function SingleMessage({ Sid, message, messageType, time, url,keys,isGroup}) {
+  const { curId, user, curuser,selected,seletedGroup, senderKey,setSenderKey } = useContext(userContext);
 
   const isMe = Sid === curId;
   const sender = isMe ? curuser : user;
   const messageDate = new Date(time);
-  // console.log(message,messageType);
+  const [privateMessage,setPrivateMessage]=useState("");
+  const [groupMessage,setGroupMessage]=useState("");
+  // console.log(messageType);
+  useEffect(() => {
+    if(isGroup || !(messageType==="text") || !keys || !curuser)return;
+     let EncryptedKey=null;
+      if(isMe){
+        EncryptedKey= keys.sender;
+      }
+      else{
+        EncryptedKey= keys.receiver;
+      }
+      if(EncryptedKey)
+      {
+        const key=decryptForUser(EncryptedKey,curuser.encryptedPrivateKey,JSON.stringify(localStorage.getItem("password")),curuser.salt);
+        const messageDecrypted=decryptWithAES(message,key);
+        setPrivateMessage(messageDecrypted);
+      }
+  }, [keys,curuser])
+
+  useEffect(()=>{
+       if(!senderKey || !(messageType=="text"))return;
+      //  console.log(message,senderKey,messageType);
+       const decrypted=decryptWithAES(message,senderKey);
+       setGroupMessage(decrypted);
+  },[senderKey])
+
 
   const localTime = messageDate.toLocaleTimeString('en-IN', {
     hour: '2-digit',
@@ -39,7 +66,9 @@ function SingleMessage({ Sid, message,messageType, time,url }) {
         />
         <div className="message-content">
 
-          {messageType=="text"?<p className="message-text mb-1">{message}</p>:<ChatFilePreview fileUrl={url}/>}
+          {messageType == "text" ? <p className="message-text mb-1">
+           {isGroup?groupMessage:privateMessage}
+          </p> : <ChatFilePreview fileUrl={url} />}
           <div className="message-meta text-muted small" title={fullTime}>
             {status} • {localTime}
           </div>

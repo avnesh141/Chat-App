@@ -16,11 +16,19 @@ const messageSchema = new mongoose.Schema({
           enum:["text","file"],
           required:true
     },
-    message: {
+    encryptedMessage: {
         type: String,
         required: ()=>{
             return this.messageType==="text";
         },
+    },
+    encryptedKeys:{
+        sender:{
+            type:String
+        },
+        receiver:{
+            type:String
+        }
     },
     fileUrl:{
         type:String,

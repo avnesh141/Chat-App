@@ -5,6 +5,13 @@ app.use(express.json());
 const mongoose = require('mongoose');
 var cors = require('cors');
 app.use(cors());
+
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Pragma', 'no-cache');
+  next();
+});
+
 app.use('/uploads', express.static('uploads'));
 
 // const path=require('path')
@@ -20,6 +27,8 @@ const uploadsDir = './uploads';
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
 }
+
+
 
 mongoose.set('strictQuery', 'true');
 

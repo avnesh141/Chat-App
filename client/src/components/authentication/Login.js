@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import './Login_page.css';
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { jwtDecode } from 'jwt-decode';
 
 import { ConfirmDialog } from 'primereact/confirmdialog'; // For <ConfirmDialog /> component
 import userContext from '../../contexts/users/UserContext';
@@ -42,10 +41,9 @@ const LoginPage = () => {
       toast.success("Logged in successfully");
       // console.log(typeof json.authtoken);
       localStorage.setItem("token",json.authtoken);
-      const JWT_SECRET = "ThisisSecretKey";
-      const decoded = jwtDecode(JSON.stringify(json.authtoken), JWT_SECRET);
-      localStorage.setItem('id',decoded.user.id);
-      setCurId(decoded.user.id);
+      localStorage.setItem('id',json.id);
+      localStorage.setItem('password',credential.password);
+      setCurId(json.id);
       navigate("/");
     }
     else {

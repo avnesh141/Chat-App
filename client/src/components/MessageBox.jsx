@@ -14,7 +14,8 @@ function MessageBox({ openGroupModal, openFriendModal }) {
     onlineUsers, selected, setSelected,
     friends, curId, groups, messages,
     setGroupChat, setSelectedGroup,
-    selectedGroup, getChatId, theme
+    selectedGroup, getChatId, theme,selectedChat,
+    setSetSelectedChat
   } = useContext(userContext);
 
   const navigate = useNavigate();
@@ -26,9 +27,10 @@ function MessageBox({ openGroupModal, openFriendModal }) {
     setChatId(selectedGroup);
   };
 
-  const handleUserClick = (_id) => {
+  const handleUserClick = (friend) => {
     setSelectedGroup(null);
-    setSelected(_id);
+    setSelected(friend._id);
+    setSetSelectedChat(friend);
     setChatId(getChatId(curId, selected));
   };
 
@@ -89,28 +91,28 @@ function MessageBox({ openGroupModal, openFriendModal }) {
           {friends?.length > 0 && (
             <React.Fragment key="friends-section">
               <p className="text-muted fw-bold px-3 mt-3">Contacts</p>
-              {friends?.map(({ _id, name, email, picture }) => (
+              {friends?.map((friend) => (
                 // <div
                 //   key={_id}
                 //   className={`entity-row ${selected === _id ? 'bg-warning bg-opacity-25' : ''}`}
                 //   onClick={() => handleUserClick(_id)}
                 // >
                   <ListItemButton
-                  key={_id}
-                  className={`entity-row ${selected === _id ? 'bg-warning bg-opacity-25' : ''}`}
-                  onClick={() => handleUserClick(_id)}
+                  key={friend._id}
+                  className={`entity-row ${selected === friend._id ? 'bg-warning bg-opacity-25' : ''}`}
+                  onClick={() => handleUserClick(friend)}
                   >
                     <ListItemAvatar>
-                      {onlineUsers?.includes(_id) && (
+                      {onlineUsers?.includes(friend._id) && (
                         <span className="badge bg-success position-absolute translate-middle p-1 rounded-circle">
                           <span className="visually-hidden">Online</span>
                         </span>
                       )}
-                      <Avatar alt={name} src={picture || '/user.webp'} />
+                      <Avatar alt={friend.name} src={friend.picture || '/user.webp'} />
                     </ListItemAvatar>
                     <ListItemText
-                      primary={_id === curId ? `${name} (You)` : name}
-                      secondary={getLastMessage(_id)}
+                      primary={friend._id === curId ? `${friend.name} (You)` : friend.name}
+                      secondary={getLastMessage(friend._id)}
                     />
                   </ListItemButton>
                 // </div>

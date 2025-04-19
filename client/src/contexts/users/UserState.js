@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import userContext from './UserContext'
 import io from "socket.io-client"
+import { encryptForUser, generateRandomAESKey, getSenderKey } from './MessageEncryption';
 
 function UserState(props) {
   const [socket, setSocket] = useState(null);
@@ -17,6 +18,8 @@ function UserState(props) {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [groupChat, setGroupChat] = useState(null);
+  const [selectedChat,setSetSelectedChat]=useState(null);
+  const [senderKey, setSenderKey] = useState('');
 
 
   const [theme, setTheme] = useState('light');
@@ -59,6 +62,7 @@ function UserState(props) {
       // console.log("fri",json.contacts)
       if (json.success) {
         setcuruser(json.user);
+        console.log(json.user);
         if (json.user.contacts) {
           setFriends([...json.user.contacts, json.user]);
         }
@@ -111,6 +115,7 @@ function UserState(props) {
           ...prev,
           [chatId]: json.messages,
         }));
+        console.log(json.messages);
       }
       setLoading(false);
     } catch (error) {
@@ -144,11 +149,11 @@ function UserState(props) {
   };
 
 
-  const sendGroupMessage = async (groupId, message, file = null) => {
+  const sendGroupMessage = async (groupId, encryptedMessage, file = null) => {
     try {
       const formData = new FormData();
-      if (file) formData.append('file', file);
-      if (message?.trim()) formData.append('message', message);
+      if (file) formData.append('file', file)
+      else{formData.append('encryptedMessage', encryptedMessage);}
 
       const res = await fetch(`/api/group/send/${groupId}`, {
         method: 'POST',
@@ -168,42 +173,40 @@ function UserState(props) {
     }
   };
 
-  const SendMessage = async (receiverId, message, file = null) => {
-    try {
-      const formData = new FormData();
-      if (file) formData.append('file', file);
-      if (message?.trim()) formData.append('message', message);
+  
 
-      const res = await fetch(`/api/message/send/${receiverId}`, {
-        method: 'POST',
-        headers: {
-          'authtoken': JSON.stringify(localStorage.getItem('token')),
-        },
-        body: formData,
+  useEffect(() => {
+    if(!curuser || !selectedGroup)return;
+    (async () => {
+      console.log(selectedGroup);
+      const key = await getSenderKey(selectedGroup, curuser._id, curuser.encryptedPrivateKey, JSON.stringify(localStorage.getItem('password')), curuser?.salt);
+      setSenderKey(key);
+      // console.log("sender Key ",key);
+    })();
+  }, [curuser,curId,selectedGroup]);
+
+  const createGroup = async (groupName, members) => {
+    try {
+
+      const senderKey = generateRandomAESKey(); 
+      members.push(curuser);// random 256-bit key
+      const memberIds=members.map((member)=>{
+        return member._id;
+      })
+      const encryptedSenderKeys = members.map((member) => {
+        const encryptedKey = encryptForUser(senderKey, member.publicKey);
+        return { user: member._id, encryptedSenderKey: encryptedKey };
       });
-
-      const data = await res.json();
-      // Optionally update messages state with new message
-      if (data.success) {
-        return data.message;
-      }
-
-    } catch (err) {
-      console.error("SendMessage error:", err);
-    }
-  };
-
-
-  const createGroup = async (groupName, memberIds) => {
-    try {
-
+    //   console.log(members[0]);
+    //   console.log(groupName);
+    //  console.log(encryptedSenderKeys);
       const response = await fetch("api/group/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "authtoken": JSON.stringify(localStorage.getItem("token")),
         },
-        body: JSON.stringify({ groupName, memberIds })
+        body: JSON.stringify({ groupName, memberIds,encryptedSenderKeys })
       });
       const json = await response.json();
       if (json.success) {
@@ -213,6 +216,17 @@ function UserState(props) {
       console.log(error.message)
     }
   };
+
+  // export const createGroup = async (groupId, members, senderKey, currentUser, usersPublicKeys) => {
+    
+   
+  //   const res = await axios.post('http://localhost:5000/api/groups', {
+  //     groupId,
+  //     members,
+  //     senderKeys: encryptedSenderKeys,
+  //   });
+  //   return res.data;
+  // };
 
   useEffect(() => {
     if (curId) {
@@ -233,14 +247,13 @@ function UserState(props) {
 
     if (selected) {
       getMessages(selected, localStorage.getItem("token"));
-      // console.log(messages);
     }
 
     if (selectedGroup) {
       getGroupMessages(selectedGroup);
     }
     setLoading(false)
-  }, [selected, selectedGroup,friends,curuser,user]);
+  }, [curuser,selected,selectedGroup]);
 
 
   useEffect(() => {
@@ -302,11 +315,12 @@ function UserState(props) {
     <userContext.Provider
       value={{
         socket, onlineUsers, selected, curuser, isLoading, setLoading,
-        setcuruser, setCurId, setSelected, users, SendMessage, getAllUsers,
+        setcuruser, setCurId, setSelected, users, getAllUsers,
         user, setuser, messages, setmessages, getMessages, curId,
         groups, setGroups, selectedGroup, setSelectedGroup, groupChat, setGroupChat,
         getGroupMessages, sendGroupMessage, createGroup, fetchUserGroups,
-        theme, toggleTheme, friends, setFriends, addFriend, getChatId
+        theme, toggleTheme, friends, setFriends, addFriend, getChatId,
+        selectedChat,setSetSelectedChat,senderKey
       }}
     >
       {props.children}
