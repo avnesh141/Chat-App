@@ -1,6 +1,5 @@
 import forge from 'node-forge';
 import CryptoJS from 'crypto-js';
-import axios from 'axios';
 
 
 export const generateRandomAESKey = () => {
@@ -138,31 +137,8 @@ export const SendMessage = async (receiver, receiverPublicKey, senderPublicKey, 
 };
 
 
-
-export const createGroup = async (groupId, members, senderKey, currentUser, usersPublicKeys) => {
-    const encryptedSenderKeys = members.map((member) => {
-        const encryptedKey = encryptForUser(senderKey, usersPublicKeys[member]);
-        return { username: member, encryptedSenderKey: encryptedKey };
-    });
-    const res = await axios.post('http://localhost:5000/api/groups', {
-        groupId,
-        members,
-        senderKeys: encryptedSenderKeys,
-    });
-    return res.data;
-};
-
-export const sendGroupMessage = async (groupId, sender, message, senderKey) => {
-    const encryptedMessage = encryptWithAES(message, senderKey);
-    await axios.post('http://localhost:5000/api/group-messages', {
-        groupId,
-        sender,
-        encryptedMessage,
-    });
-};
-
 export const getSenderKey = async (groupId, user, privateKeyPem, password, salt) => {
-    console.log("user ", user, "groupId ", groupId);
+    // console.log("user ", user, "groupId ", groupId);
     const response = await fetch(`/api/group/sender-keys/${groupId}`, {
         method: "GET",
         headers: {
@@ -177,13 +153,6 @@ export const getSenderKey = async (groupId, user, privateKeyPem, password, salt)
     return decryptForUser(senderKeyObj.encryptedSenderKey, privateKeyPem, password, salt);
 };
 
-export const receiveGroupMessages = async (groupId, senderKey) => {
-    const res = await axios.get(`http://localhost:5000/api/group-messages/${groupId}`);
-    return res.data.map((msg) => ({
-        ...msg,
-        decryptedText: decryptWithAES(msg.encryptedMessage, senderKey),
-    }));
-};
 
 // const testKey = generateRandomAESKey();
 // const encrypted = encryptWithAES("Hello!", testKey);
