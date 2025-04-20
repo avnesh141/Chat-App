@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import './Description.css';
-import userContext from '../contexts/users/UserContext';
+import './InfoPage.css';
+import userContext from '../../contexts/users/UserContext';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
-function Description() {
+function Info() {
 
   const { user, selectedGroup, groupChat } = useContext(userContext);
   // console.log(groupChat)
@@ -53,4 +53,4 @@ function Description() {
     </div>
   );
 }
-export default Description;
+export default Info;

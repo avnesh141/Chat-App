@@ -6,7 +6,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import './MessageBox.css';
-import userContext from '../contexts/users/UserContext';
+import userContext from '../../contexts/users/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 function MessageBox({ openGroupModal, openFriendModal }) {
@@ -54,11 +54,6 @@ function MessageBox({ openGroupModal, openFriendModal }) {
             </button>
             <button className="btn btn-sm btn-outline-primary mx-1" onClick={openFriendModal}>
               + Friend
-            </button>
-            <button className="btn btn-sm btn-outline-primary mx-1" onClick={() => {
-              navigate('/lobby');
-            }}>
-              + 🎦
             </button>
           </div>
         </div>

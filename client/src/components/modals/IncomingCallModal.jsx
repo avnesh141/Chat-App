@@ -1,8 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
+import userContext from '../../contexts/users/UserContext';
 
-const IncomingCallModal = ({ callerName = "Someone", onAccept, onReject }) => {
+const IncomingCallModal = () => {
   const ringtoneRef = useRef();
   const timeoutRef = useRef();
+
+const { callerName, onAccept, onReject ,offer} = useContext(userContext);
+  // userContext
 
   useEffect(() => {
     const audio = ringtoneRef.current;
@@ -35,7 +39,7 @@ const IncomingCallModal = ({ callerName = "Someone", onAccept, onReject }) => {
     ringtoneRef.current.pause();
     ringtoneRef.current.currentTime = 0;
     clearTimeout(timeoutRef.current);
-    onAccept();
+    onAccept(offer);
   };
 
   const handleReject = () => {

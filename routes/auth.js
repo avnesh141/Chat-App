@@ -130,7 +130,7 @@ router.get("/getuser", fetchuser, async (req, res) => {
   }
 });
 router.get("/getall",async (req, res) => {
-  console.log("getALl")
+  console.log("getALL")
   let success=false;
   try {
     const users = await User.find().select("-password");

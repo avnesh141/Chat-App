@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
-import MessageBox from "./MessageBox";
-import MessagePage from "./MessagePage";
-import Description from "./Description";
-import FriendModal from "./FriendModal";
-import GroupModal from "./GroupModal";
-import userContext from '../contexts/users/UserContext';
+import MessageBox from "../contactList/MessageBox";
+import MessagePage from "../messages/MessagePage";
+import InfoPage from "../infoPage/InfoPage";
+import FriendModal from "../modals/FriendModal";
+import GroupModal from "../modals/GroupModal";
+import userContext from '../../contexts/users/UserContext';
 import './Chatpage.css';
 
 
@@ -19,7 +19,7 @@ function SecondaryChatPage() {
                     <MessageBox openGroupModal={() => setShowGroupModal(true)} openFriendModal={() => setShowFriendModal(true)} />
                 </div>
                 <MessagePage dis={0} />
-                <Description />
+                <InfoPage />
             </div>
 
             <div className="mainChat2">

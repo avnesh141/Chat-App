@@ -1,11 +1,11 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import './SingleMessage.css';
-import userContext from '../contexts/users/UserContext';
+import userContext from '../../../contexts/users/UserContext';
 import { DateDiff } from './DateDiff';
 import { Avatar } from '@mui/material';
 import ChatFilePreview from './ChatFilePreView';
-import { decryptForUser, decryptWithAES } from '../contexts/users/MessageEncryption';
+import { decryptForUser, decryptWithAES } from '../../../contexts/users/MessageEncryption';
 
 function SingleMessage({ Sid, message, messageType, time, url,keys,isGroup}) {
   const { curId, user, curuser,selected,seletedGroup, senderKey,setSenderKey } = useContext(userContext);

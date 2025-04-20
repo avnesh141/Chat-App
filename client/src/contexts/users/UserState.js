@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import userContext from './UserContext'
 import io from "socket.io-client"
 import { encryptForUser, generateRandomAESKey, getSenderKey } from './MessageEncryption';
+import peer from './service/peer';
 
 function UserState(props) {
   const [socket, setSocket] = useState(null);
@@ -21,7 +22,9 @@ function UserState(props) {
   const [selectedChat,setSetSelectedChat]=useState(null);
   const [senderKey, setSenderKey] = useState('');
 
-
+  const [incomingCall, setIncomingCall] = useState(false);
+  const [showCall, setShowCall] = useState(false);
+   const [callerName, setCallerName] = useState(null);
   const [theme, setTheme] = useState('light');
 
   const toggleTheme = () => {
@@ -311,6 +314,147 @@ function UserState(props) {
     }
   }
 
+  const [canCall, setCanCall] = useState(false);
+  
+    const [remotSocketId, setRemoteSocketId] = useState();
+    // const [remoteId, setRemoteId] = useState();
+    const [myStream, setMyStream] = useState(null);
+    const [remoteStream, setRemoteStream] = useState(null);
+    const [remoteId, setRemoteId] = useState(null);
+    const [offer, setOffer] = useState(null);
+    const [isCallee,setIsCallee]=useState(false);
+  
+  
+    const handleClick = useCallback(() => {
+      if (!socket) return;
+      console.log(socket);
+      socket.emit("join", { curId });
+      setCanCall(true);
+    }, [socket, curId])
+  
+  
+    const handleCallUser = useCallback(async () => {
+      // if(selected)
+      // {
+        setRemoteId(selected)
+      // }
+      console.log("call user",remoteId, selected);
+      const stream = await navigator.mediaDevices.getUserMedia(
+        {
+          audio: true,
+          video: true
+        }
+      );
+      const offer = await peer.getOffer();
+      socket.emit("user:call", { to: selected, offer,from: curId });
+      setMyStream(stream);
+    }, [socket, selected])
+  
+    const handleIncomingCall = useCallback(async ({ from, offer,to }) => {
+      setIsCallee(true);
+      setRemoteSocketId(from);
+      setIncomingCall(true);
+      setRemoteId(from);
+      console.log("incoming call", from);
+      friends.forEach(friend => {  
+        if (friend._id === from) {
+          setCallerName(friend.name);
+          console.log(friend.name);
+        }})
+        setOffer(offer);
+      // socket.emit("call:accepted", { to: from, ans,from:to });
+    }, [socket,friends])
+  
+    const sendStreams = useCallback(() => {
+      console.log("Sending Streams");
+      for (const track of myStream.getTracks()) {
+        peer.peer.addTrack(track, myStream);
+      }
+    }, [myStream])
+  
+    const handleCallAccepted = useCallback(async ({ from,to, ans }) => {
+      await peer.setLocalDescription(ans);
+      console.log("Call Accepted");
+      sendStreams();
+    }, [sendStreams]);
+  
+    const handleNegotiationNeeded = useCallback(async () => {
+      console.log("Negotiation needed", remoteId, " ", selected, curId);
+      // if(!remoteId)return;
+      const offer = await peer.getOffer();
+      console.log("peer nego", remoteId, " ",selected, curId);
+      socket.emit('peer:nego:needed', { offer, to: remoteId, from: curId });
+    }, [socket,remoteId])
+  
+    useEffect(() => {
+      peer.peer.addEventListener("negotiationneeded", handleNegotiationNeeded)
+  
+      return () => {
+        peer.peer.removeEventListener("negotiationneeded", handleNegotiationNeeded)
+  
+      }
+    }, [handleNegotiationNeeded])
+  
+  
+    useEffect(() => {
+      peer.peer.addEventListener('track', async (event) => {
+        const remoteStream = event.streams[0];
+        console.log("Got Tracks");
+        setRemoteStream(remoteStream);
+      })
+  
+    }, [])
+  
+    const handleNegoNeededIncoming = useCallback(async ({ to,from, offer }) => {
+      console.log("incoming nego");
+      const ans = await peer.getAnswer(offer);
+      socket.emit("peer:nego:done", { to: from,from:to, ans })
+    }, [socket])
+  
+    const handlenegoFinal = useCallback(async ({ to, from, ans }) => {
+      console.log("Done");
+      await peer.setLocalDescription(ans);
+    }, [])
+  
+  
+    useEffect(() => {
+      if (!socket) return;
+      socket.on("incoming:call", handleIncomingCall)
+      socket.on("call:accepted", handleCallAccepted);
+      socket.on("peer:nego:needed", handleNegoNeededIncoming);
+      socket.on("peer:nego:final", handlenegoFinal);
+  
+      return () => {
+        socket.off("incoming:call", handleIncomingCall);
+        socket.off("call:accepted", handleCallAccepted);
+        socket.off("peer:nego:needed", handleNegoNeededIncoming);
+        socket.off("peer:nego:final", handlenegoFinal);
+      }
+    }, [socket, handleCallAccepted, handleNegoNeededIncoming])
+  
+
+    const onAccept = useCallback(async(offer) => {
+      setIncomingCall(false);
+      setShowCall(true);
+      console.log("Accepted Call", remoteId, selected, curId);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      setMyStream(stream);
+      const ans = await peer.getAnswer(offer);
+      socket.emit("call:accepted", { to: remoteId,ans, from: curId });
+    }, [socket, remoteId, selected, curId])
+
+
+    const onReject = useCallback(() => {
+      setIncomingCall(false);
+      setRemoteId(null);
+      setRemoteSocketId(null);
+    } , []) 
+
+// useCallback
+// peer
   return (
     <userContext.Provider
       value={{
@@ -320,8 +464,9 @@ function UserState(props) {
         groups, setGroups, selectedGroup, setSelectedGroup, groupChat, setGroupChat,
         getGroupMessages, sendGroupMessage, createGroup, fetchUserGroups,
         theme, toggleTheme, friends, setFriends, addFriend, getChatId,
-        selectedChat,setSetSelectedChat,senderKey
-      }}
+        selectedChat,setSetSelectedChat,senderKey,showCall, setShowCall,setIsCallee,isCallee,
+        setIncomingCall, incomingCall, setCanCall, canCall,callerName, onAccept, onReject ,offer,
+        handleClick, handleCallUser, myStream, remoteStream, remoteId,sendStreams}}
     >
       {props.children}
 

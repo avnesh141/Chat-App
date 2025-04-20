@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import userContext from '../contexts/users/UserContext';
-import {io} from "socket.io-client"
+import userContext from '../../../contexts/users/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 function VideoCallLobby() {

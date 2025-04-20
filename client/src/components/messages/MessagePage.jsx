@@ -1,12 +1,12 @@
 // export default MessagePage;
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import userContext from '../contexts/users/UserContext';
-import SingleMessage from './SingleMessage';
+import userContext from '../../contexts/users/UserContext';
+import SingleMessage from './singleMessage/SingleMessage';
 import './MessagePage.css';
-import UselistenHook from '../contexts/users/UselistenHook';
+import UselistenHook from '../../contexts/users/UselistenHook';
 import EmojiPicker from 'emoji-picker-react';
 import { Avatar } from '@mui/material';
-import { decryptForUser, decryptWithAES, encryptForUser, encryptWithAES, SendMessage } from '../contexts/users/MessageEncryption';
+import { encryptWithAES, SendMessage } from '../../contexts/users/MessageEncryption';
 
 function MessagePage({ dis }) {
 
@@ -19,10 +19,11 @@ function MessagePage({ dis }) {
   const {
     user, messages, selected, isLoading,
     curuser, setSelected, curId, selectedGroup, setSelectedGroup,
-    sendGroupMessage, groupChat, getChatId, setShowCall,
-    selectedChat, senderKey
+    sendGroupMessage, groupChat, getChatId,
+    selectedChat, senderKey,incomingCall,showCall,setShowCall,
   } = usrcntx;
 
+  // const [showCall, setShowCall] = useState(false);
 
   const [chatId, setChatId] = useState(null);
   useEffect(() => {

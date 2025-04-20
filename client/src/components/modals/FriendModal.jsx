@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import userContext from '../contexts/users/UserContext';
+import userContext from '../../contexts/users/UserContext';
 import './GroupModal.css'; // You can rename this later if needed
 
 function FriendModal({ closeModal }) {

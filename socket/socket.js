@@ -48,36 +48,53 @@ io.on('connection', (socket) => {
     io.to(socket.id).emit("room:join", data);
   })
 
-  socket.on('user:call', ({ offer, to }) => {
-    console.log(Object.keys(userSocketMap));
-    console.log(userSocketMap[to], "to", to);
-    io.to(to).emit('incoming:call', {
+  socket.on('user:call', ({ offer, to,from }) => {
+    // console.log(Object.keys(userSocketMap));
+    // console.log(userSocketMap[to], "to", to);
+    io.to(userSocketMap[to]).emit('incoming:call', {
       offer,
-      from: socket.id
+      from,
+      to
     });
   });
 
-  socket.on('call:accepted', ({ to, ans }) => {
-    io.to(to).emit('call:accepted', { from: socket.id, ans })
+  socket.on('call:accepted', ({ to, ans,from }) => {
+    if(!to || !userSocketMap[to]){
+      console.log("User not found or not connected When call accepted");
+      return;
+    }
+    io.to(userSocketMap[to]).emit('call:accepted', { from,to, ans })
   })
 
-  socket.on("peer:nego:needed", ({ to, offer }) => {
-    console.log("peer nego needed", offer);
+  socket.on("peer:nego:needed", ({ to, offer,from }) => {
+    // console.log("peer nego needed", offer);
     try {
-      console.log(to, "  ", userSocketMap[to]);
-      io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
-      console.log("Inside Try Catch nego needed");
+      // console.log(to, "  ", userSocketMap[to]);
+      if(!to || !userSocketMap[to]){
+        console.log(to,"User not found or not connected When nego needed");
+        return;
+      }
+      io.to(userSocketMap[to]).emit("peer:nego:needed", { from,to, offer });
+      // console.log("Inside Try Catch nego needed");
     } catch (error) {
       console.log(error.message);
     }
   })
 
-  socket.on("peer:nego:done", ({ to, ans }) => {
-    console.log("peer nego done", ans);
-    io.to(to).emit("peer:nego:final", { from: socket.id, ans });
+  socket.on("peer:nego:done", ({ to, ans,from }) => {
+    // console.log("peer nego done", ans);
+    if(!to || !userSocketMap[to]){
+      console.log("User not found or not connected When nego done");
+      return;
+    }
+    io.to(userSocketMap[to]).emit("peer:nego:final", { from,to, ans });
   })
-
-
+  
+  
+  // if(!to || !userSocketMap[to]){
+  //   console.log("User not found or not connected When nego done");
+  //   return;
+  // }
 })
 
 

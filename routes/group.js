@@ -52,7 +52,7 @@ router.get('/sender-keys/:groupId', async (req, res) => {
     if (!group) return res.status(404).send('Group not found');
     res.status(200).json(group.senderKeys);
   } catch (error) {
-
+      res.status(500).json({ message: 'Failed to fetch sender keys' });
   }
 });
 
